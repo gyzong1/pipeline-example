@@ -209,8 +209,8 @@ dir("docker-lifecycle-scripts") {
         sh tagList;
           
         println("deploy docker-app image")
-        //sh "docker stop docker-app"
-        //sh "docker rm docker-app"
+        sh "docker stop docker-app"
+        sh "docker rm docker-app"
         sh "docker rmi ${DOCKER_URL}/docker-virtual/docker-app:latest"
         sh "docker run -d --name docker-app -p 19999:8181 ${DOCKER_URL}/docker-virtual/docker-app:latest"
 
