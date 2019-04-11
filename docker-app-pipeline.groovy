@@ -2,6 +2,9 @@ node {
 // -------------------------------------------------------------------------------------------------------
 // Parameters
 
+  // docker
+  def DOCKER_URL = '192.168.230.147:8081'
+
   // sonarqube
   def SONAR_HOST_URL = 'http://192.168.230.147:9000'
   def SONAR_SERVER = 'sonarqube-7.5'
@@ -25,23 +28,22 @@ node {
   def buildInfo = Artifactory.newBuildInfo()
 
   // git
-  def GIT_URL_PROJECT = 'https://github.com/gyzong1/project-examples.git'
-  def GIT_URL_DOCKER = 'https://github.com/gyzong1/docker-lifecycle-scripts.git'
+  def GIT_URL = 'https://github.com/gyzong1/JfrogChina.git'
 
   // maven
   def MAVEN_TOOL = 'maven'
   def MAVEN_GOALS = 'clean install'
   def POM_PATH = 'maven-example/pom.xml'
 
-  // docker
-  def DOCKER_URL = '192.168.230.147:8081'
-
   // -------------------------------------------------------------------------------------------------------
 
   // 拉取代码
   stage ('Checkout Code') {
-    git GIT_URL_PROJECT
+    git GIT_URL
   }
+
+dir("project-examples") {
+
 /*
   // Sonar 静态代码扫描
   stage('Sonar') {
@@ -82,11 +84,9 @@ node {
     rtMaven.tool = MAVEN_TOOL
     rtMaven.run pom: POM_PATH, goals: MAVEN_GOALS, buildInfo: buildInfo
   }
+}
 
-  // Checkout Docker code
-  stage('Checkout Docker') {
-    git GIT_URL_DOCKER
-  }
+dir("docker-lifecycle-scripts") {
 
   stage('Resolve') {
     dir('docker-app') {
@@ -135,56 +135,8 @@ node {
       }
     }
   }
-}
 
-println("===================================================================================")
-
-node {
-// -------------------------------------------------------------------------------------------------------
-// Parameters
-
-  // sonarqube
-  def SONAR_HOST_URL = 'http://192.168.230.147:9000'
-  def SONAR_SERVER = 'sonarqube-7.5'
-  def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
-  def SONAR_PROJECT_KEY = "${JOB_NAME}"
-  def SONAR_SOURCES = 'maven-example/multi3/src'
- 
-  // artifactory
-  def ART_URL = 'http://192.168.230.147:8081/artifactory/'
-  def CREDENTIALSID = '61eb9b15-f4bb-4fec-b2ff-ff0648c0bd56'
-  def PASSWORDVARIABLE = 'PASSWORD'
-  def USERNAMEVARIABLE = 'USERNAME'
-  def SOURCEREPO = 'docker-dev-local'
-  def TARGETREPO = 'docker-release-local'
-  def RESOLVE_SNAPSHOT_REPO = 'maven-snapshots-virtual'
-  def RESOLVE_RELEASE_REPO = 'maven-releases-virtual'
-  def DEPLOY_SNAPSHOT_REPO = 'maven-snapshots-local'
-  def DEPLOY_RELEASE_REPO = 'maven-releases-local'
-  def artServer = Artifactory.server('art1')
-  def rtMaven = Artifactory.newMavenBuild()
-  def buildInfo = Artifactory.newBuildInfo()
-
-  // git
-  def GIT_URL_PROJECT = 'https://github.com/gyzong1/project-examples.git'
-  def GIT_URL_DOCKER = 'https://github.com/gyzong1/docker-lifecycle-scripts.git'
-
-  // maven
-  def MAVEN_TOOL = 'maven'
-  def MAVEN_GOALS = 'clean install'
-  def POM_PATH = 'maven-example/pom.xml'
-
-  // docker
-  def DOCKER_URL = '192.168.230.147:8081'
-
-  // -------------------------------------------------------------------------------------------------------
-
-  // 拉取代码
-  stage ('Checkout Code') {
-    git GIT_URL_DOCKER
-  }
-
-  stage('testing app') {
+    stage('testing app') {
     dir('docker-app/app-test') {
       withCredentials([usernamePassword(credentialsId: CREDENTIALSID, passwordVariable: PASSWORDVARIABLE, usernameVariable: USERNAMEVARIABLE)]) {
         def uname=env.USERNAME
@@ -238,34 +190,36 @@ node {
       }
     }
   }
-            /*
-        stage('distribute') {
-            def distribStr=curlstr+'api/build/distribute/'+env.JOB_NAME+'/'+env.BUILD_NUMBER+"' -X POST -H 'Content-Type: application/json' "
-            def dockerDistrib = distribStr+ "-T distributeDocker.json"
-            println(dockerDistrib)
-            sh dockerDistrib
-            def warDistrib = distribStr+"-T distributeWar.json"
-            sh warDistrib
-        }
-        stage('deployment') {
-            println("deploy app")
-            def aqlSearch = curlstr+"api/search/aql' -X POST -T aql.json";
-            println(aqlSearch)
-            sh aqlSearch;
-              
-            def tagList = curlstr+"api/docker/docker-local2/v2/docker-app/tags/list'";
-            sh tagList;
-              
-            println("deploy docker-app image")
-            sh "docker stop docker-app"
-            sh "docker rm docker-app"
-            sh "docker rmi docker-virtual.test.artifactory.com/docker-app:latest"
-            sh "docker run -d --name docker-app -p 19999:8181 docker-virtual.test.artifactory.com/docker-app:latest"
 
-            def deployResult = curlstr+"api/storage/docker-local2/docker-app/latest/manifest.json?properties=deploy.server=production;deploy.warVersion=multi3-"+env.WARVER+";deploy.dockerTag="+env.BUILD_NUMBER+"' -X PUT"
-            println("write deployResult back:" + deployResult);
-            sh deployResult;
-        }
-        */
-         
+  stage('deployment') {
+    dir('docker-app/app-test') {
+      withCredentials([usernamePassword(credentialsId: CREDENTIALSID, passwordVariable: PASSWORDVARIABLE, usernameVariable: USERNAMEVARIABLE)]) {
+        def uname=env.USERNAME
+        def pw=env.PASSWORD
+        artServer.username=uname
+        artServer.password=pw
+        def artDocker= Artifactory.docker server: artServer
+        def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
+        println("deploy app")
+        def aqlSearch = curlstr+"api/search/aql' -X POST -T aql.json"
+        println(aqlSearch)
+        sh aqlSearch;
+          
+        def tagList = curlstr+"api/docker/docker-release-local/v2/docker-app/tags/list'"
+        sh tagList;
+          
+        println("deploy docker-app image")
+        //sh "docker stop docker-app"
+        //sh "docker rm docker-app"
+        sh "docker rmi ${DOCKER_URL}/docker-virtual/docker-app:latest"
+        sh "docker run -d --name docker-app -p 19999:8181 ${DOCKER_URL}/docker-virtual/docker-app:latest"
+
+        def deployResult = curlstr+"api/storage/docker-release-local/docker-app/latest/manifest.json?properties=deploy.server=production;deploy.warVersion=multi3-"+env.WARVER+";deploy.dockerTag="+env.BUILD_NUMBER+"' -X PUT"
+        println("write deployResult back:" + deployResult);
+        sh deployResult;
+      }
+    }
+  }
+}
+
 }
