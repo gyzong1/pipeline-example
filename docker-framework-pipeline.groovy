@@ -2,6 +2,9 @@ node {
 // -------------------------------------------------------------------------------------------------------
 // Parameters
 
+  // docker
+  def DOCKER_URL = '192.168.230.147:8081'
+
   // sonarqube
   def SONAR_HOST_URL = 'http://192.168.230.147:9000'
   def SONAR_SERVER = 'sonarqube-7.5'
@@ -25,23 +28,20 @@ node {
   def buildInfo = Artifactory.newBuildInfo()
 
   // git
-  def GIT_URL_PROJECT = 'https://github.com/gyzong1/project-examples.git'
-  def GIT_URL_DOCKER = 'https://github.com/gyzong1/docker-lifecycle-scripts.git'
+  def GIT_URL = 'https://github.com/gyzong1/JfrogChina.git'
 
   // maven
   def MAVEN_TOOL = 'maven'
   def MAVEN_GOALS = 'clean install'
   def POM_PATH = 'maven-example/pom.xml'
 
-  // docker
-  def DOCKER_URL = '192.168.230.147:8081'
-
   // -------------------------------------------------------------------------------------------------------
 
   stage ('Checkout Code') {
-    git GIT_URL_PROJECT
+    git GIT_URL
   }
-    
+ 
+dir('project-examples') {
   stage ('Build Maven') { 
     rtMaven.resolver server: artServer, releaseRepo: RESOLVE_RELEASE_REPO, snapshotRepo: RESOLVE_SNAPSHOT_REPO
     rtMaven.deployer server: artServer, releaseRepo: DEPLOY_RELEASE_REPO, snapshotRepo: DEPLOY_SNAPSHOT_REPO
@@ -50,54 +50,11 @@ node {
   }
 }
 
-
-node{
-// -------------------------------------------------------------------------------------------------------
-// Parameters
-
-  // sonarqube
-  def SONAR_HOST_URL = 'http://192.168.230.147:9000'
-  def SONAR_SERVER = 'sonarqube-7.5'
-  def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
-  def SONAR_PROJECT_KEY = "${JOB_NAME}"
-  def SONAR_SOURCES = 'maven-example/multi3/src'
- 
-  // artifactory
-  def ART_URL = 'http://192.168.230.147:8081/artifactory/'
-  def CREDENTIALSID = '61eb9b15-f4bb-4fec-b2ff-ff0648c0bd56'
-  def PASSWORDVARIABLE = 'PASSWORD'
-  def USERNAMEVARIABLE = 'USERNAME'
-  def SOURCEREPO = 'docker-dev-local'
-  def TARGETREPO = 'docker-release-local'
-  def RESOLVE_SNAPSHOT_REPO = 'maven-snapshots-virtual'
-  def RESOLVE_RELEASE_REPO = 'maven-releases-virtual'
-  def DEPLOY_SNAPSHOT_REPO = 'maven-snapshots-local'
-  def DEPLOY_RELEASE_REPO = 'maven-releases-local'
-  def artServer = Artifactory.server('art1')
-  def rtMaven = Artifactory.newMavenBuild()
-  def buildInfo = Artifactory.newBuildInfo()
-
-  // git
-  def GIT_URL_PROJECT = 'https://github.com/gyzong1/project-examples.git'
-  def GIT_URL_DOCKER = 'https://github.com/gyzong1/docker-lifecycle-scripts.git'
-
-  // maven
-  def MAVEN_TOOL = 'maven'
-  def MAVEN_GOALS = 'clean install'
-  def POM_PATH = 'maven-example/pom.xml'
-
-  // docker
-  def DOCKER_URL = '192.168.230.147:8081'
-
-  // -------------------------------------------------------------------------------------------------------
-
-  stage('SCM'){
-    git GIT_URL_DOCKER   
-  }
+dir('docker-lifecycle-scripts') {
 
   stage('Resolve') {
     dir('docker-framework') {
-      withCredentials([usernamePassword(credentialsId: '61eb9b15-f4bb-4fec-b2ff-ff0648c0bd56', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+      withCredentials([usernamePassword(credentialsId: CREDENTIALSID, passwordVariable: PASSWORDVARIABLE, usernameVariable: USERNAMEVARIABLE)]) {
         def uname=env.USERNAME
         def pw=env.PASSWORD
         artServer.username=uname
@@ -136,7 +93,7 @@ node{
 
   stage('docker build') {
     dir('docker-framework') {
-      withCredentials([usernamePassword(credentialsId: '61eb9b15-f4bb-4fec-b2ff-ff0648c0bd56', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+      withCredentials([usernamePassword(credentialsId: CREDENTIALSID, passwordVariable: PASSWORDVARIABLE, usernameVariable: USERNAMEVARIABLE)]) {
         def uname=env.USERNAME
         def pw=env.PASSWORD
         artServer.username=uname
@@ -164,52 +121,6 @@ node{
         sh retagstr
       }
     }
-  }
-}
-
-
-node {
-// -------------------------------------------------------------------------------------------------------
-// Parameters
-
-  // sonarqube
-  def SONAR_HOST_URL = 'http://192.168.230.147:9000'
-  def SONAR_SERVER = 'sonarqube-7.5'
-  def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
-  def SONAR_PROJECT_KEY = "${JOB_NAME}"
-  def SONAR_SOURCES = 'maven-example/multi3/src'
- 
-  // artifactory
-  def ART_URL = 'http://192.168.230.147:8081/artifactory/'
-  def CREDENTIALSID = '61eb9b15-f4bb-4fec-b2ff-ff0648c0bd56'
-  def PASSWORDVARIABLE = 'PASSWORD'
-  def USERNAMEVARIABLE = 'USERNAME'
-  def SOURCEREPO = 'docker-dev-local'
-  def TARGETREPO = 'docker-release-local'
-  def RESOLVE_SNAPSHOT_REPO = 'maven-snapshots-virtual'
-  def RESOLVE_RELEASE_REPO = 'maven-releases-virtual'
-  def DEPLOY_SNAPSHOT_REPO = 'maven-snapshots-local'
-  def DEPLOY_RELEASE_REPO = 'maven-releases-local'
-  def artServer = Artifactory.server('art1')
-  def rtMaven = Artifactory.newMavenBuild()
-  def buildInfo = Artifactory.newBuildInfo()
-
-  // git
-  def GIT_URL_PROJECT = 'https://github.com/gyzong1/project-examples.git'
-  def GIT_URL_DOCKER = 'https://github.com/gyzong1/docker-lifecycle-scripts.git'
-
-  // maven
-  def MAVEN_TOOL = 'maven'
-  def MAVEN_GOALS = 'clean install'
-  def POM_PATH = 'maven-example/pom.xml'
-
-  // docker
-  def DOCKER_URL = '192.168.230.147:8081'
-
-  // -------------------------------------------------------------------------------------------------------
-
-  stage('SCM') {
-    git GIT_URL_DOCKER    
   }
 
   stage('testing') {
@@ -259,6 +170,7 @@ node {
         artServer.username=uname
         artServer.password=pw
         def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
+
         def artDocker= Artifactory.docker server: artServer   
         def promotionConfig = [
           'buildName'          : env.JOB_NAME,
@@ -268,11 +180,12 @@ node {
           'sourceRepo'         : SOURCEREPO,
           'status'             : 'Released',
           'includeDependencies': false,
+          'failFast'           : false,
           'copy'               : true
         ]
-
         // Promote build
         artServer.promote promotionConfig
+
          dir('..') {
           sh 'ls -l'
             sh 'sed -E "s/@/$BUILD_NUMBER/" retag-release.json > retag_out_release.json'
@@ -283,4 +196,6 @@ node {
       }
     }
   }
+}
+
 }
