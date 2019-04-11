@@ -1,0 +1,11 @@
+{
+    "key" : "libs-dev",
+    "rclass" : "virtual",
+    "packageType" : "maven",
+    "repositories" : [ "libs-dev-local", "libs-release" ],
+    "description" : "This repository is for storing dev java outputs of gradle builds.  Every build is a release candidate and is versioned accordingly.",
+    "notes" : "This repo was created by configArt.sh",
+    "repoLayoutRef" : "maven-2-default",
+    "pomRepositoryReferencesCleanupPolicy" : "discard_any_reference",
+    "defaultDeploymentRepo": "libs-dev-local"
+}

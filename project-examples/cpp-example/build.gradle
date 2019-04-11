@@ -1,0 +1,22 @@
+allprojects {
+    apply plugin: 'idea'
+    version = '1.0-SNAPSHOT'
+    status = 'integration'
+    group = 'org.jfrog.example.cpp'
+}
+
+subprojects {
+    idea {
+        module {
+            sourceDirs += [file('src/main/cpp'), file('src/main/headers')]
+        }
+    }
+}
+
+project(":TextWriter") {
+    apply plugin: "cpp-lib"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.3'
+}

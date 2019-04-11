@@ -1,0 +1,86 @@
+# Step 0:  Getting ready before we start
+#If using windows, you will have to install and run jenkins on your docker-machine VM (just docker-machine ssh, and git clone this again in an appropriate location there)
+#you may also take this approach on the mac, or you may perform tasks natively on mac (homebrew STRONGLY recommended)
+#To enter docker-machine vm:
+docker-machine ssh
+#create a directory to work from for this class and:
+git clone https://github.com/jfrogtraining/docker-lifecycle-scripts.git
+curl -uadmin:password http://192.168.1.139:8081/artifactory/jfrog-cli/1.2.1/jfrog-cli-linux-amd64/jfrog -O
+#then run all further commands from there
+
+
+#To prep mac:
+#install homebrew (if not already installed)
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+#or if already installed:
+brew update
+export HOMEBREW_BOTTLE_DOMAIN=https://192.168.1.139:8081/artifactory
+brew install gnu-sed
+brew install jfrog-cli-go
+#if you already have jfrog-cli-go installed please ugrade just in case:
+brew upgrade jfrog-cli-go
+
+# Step 1:  build an artifactory server to use
+# First Get a license
+#If not on mac browse to: https://artifactory-us.jfrog.info/artifactory/jfrog-cli/1.2.0/
+#And select the appropriate binary for your distribution
+#Then build it.
+
+#if following commands with CLI do not work try using ./jfrog instead of just jfrog
+jfrog mc c --url=http://192.168.1.139:8085 --user=admin --password=password --interactive=false
+jfrog mc rti attach-lic <userName> --bucket-id=1831531631 --bucket-key=68b5f7dcbe7c25dcf2ef2952c7429b99ec217d01a832eb6c4261738187d2e097  --license-path=assets/artifactory.lic
+
+git clone https://github.com/JFrogDev/artifactory-user-plugins.git
+
+######Prepare your docker-machine######
+docker-machine ssh
+sudo vi /var/lib/boot2docker/profile
+#insert:
+--insecure-registry 192.168.1.139:5003
+--insecure-registry docker-dev.art.local
+--insecure-registry docker-prod.art.local
+#save and exit
+sudo vi /etc/hosts
+# this may not be needed on some machines but makes your life easy add:
+127.0.0.1 docker-dev.art.local docker-prod.art.local
+#save and exit
+exit
+docker-machine restart
+
+#####now we are ready to build#####
+
+docker build --tag artifactory-registry .
+
+#Step 2: Install Jenkins!
+#Jenkins Installation Instructions
+
+#Step 3: Setup docker
+#edit /etc/hosts add following line to bottom:
+<docker-machine IP> docker-dev.art.local docker-prod.art.local art.local
+
+#Update insecure registries (ED NOTE:  Try to fix this by having real certs!)
+DOCKER_OPTS="$DOCKER_OPTS --insecure-registry docker-dev-virtual.art.local --insecure-registry docker-prod-virtual.art.local"
+
+docker run -d --name art-docker -p 80:80 -p 8081:8081 -p 443:443 artifactory-registry
+export DOCKER_ART_URL="http://art.local:8081/artifactory"
+#BROWSE TO: $DOCKER_ART_URL:8081/artifactory and wait for artifactory to start!
+cd configArt
+./configArt.sh
+
+#Step 4: Configure Tomcat Dependency
+jfrog rt config --url=$DOCKER_ART_URL --user=admin --password=password --interactive=false
+jfrog rt cp apache-archive-cache/tomcat/tomcat-8/v8.0.32/bin/apache-tomcat-8.0.32.tar.gz tomcat-local/org/apache/apache-tomcat/apache-tomcat-8.0.32.tar.gz
+
+#Step 5: Prime framework release build:
+export BUILD_NUMBER=1
+jfrog rt cp docker-dev-local2/swampup/docker-framework/$BUILD_NUMBER/ docker-prod-local2
+cd ../docker-framework/framework-test
+sed -E "s/@/$BUILD_NUMBER/" retag.json > retag_out.json
+curl -uadmin:password -X POST "$DOCKER_ART_URL/api/plugins/execute/dockerRetag" -T retag_out.json
+
+
+#Run App
+docker run -d --name test-app2 -p 8181:8181 883d7f53e798
+
+#PROMOTE TOMCAT VERSION:
+jfrog rt cp apache-archive-cache/tomcat/tomcat-8/v8.0.35/bin/apache-tomcat-8.0.35.tar.gz tomcat-local/org/apache/apache-tomcat/pache-tomcat-8.0.35.tar.gz

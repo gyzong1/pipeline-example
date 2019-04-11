@@ -1,0 +1,14 @@
+{
+    "status": "Released",
+    "comment" : "passed all tests and ready for production.",
+    "ciUser": "swampupCI",
+    "dryRun" : false,
+    "targetRepo" : "docker-prod-local2",
+    "copy": true,
+    "artifacts" : true,
+    "dependencies" : false,
+    "properties": {
+	"qa.status": ["approved"]
+    },
+    "failFast": true
+}

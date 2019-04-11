@@ -1,0 +1,14 @@
+{
+    "key" : "jcenter",
+    "rclass" : "remote",
+    "packageType" : "maven",
+    "url" : "http://192.168.1.139:8081/artifactory/jcenter",
+    "description" : "Bintray Central Java repository",
+    "notes" : "This repo was created by configArt.sh, it is a chained remote of the lab jcenter repository.  Outside the classroom please change its url to http://jcenter.bintray.com",
+    "repoLayoutRef" : "maven-2-default",
+    "handleReleases" : true,
+    "handleSnapshots" : true,
+    "suppressPomConsistencyChecks" : true,
+    "fetchJarsEagerly" : false,
+    "propertySets" : [ "artifactory" ]
+}

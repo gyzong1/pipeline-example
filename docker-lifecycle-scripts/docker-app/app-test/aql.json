@@ -1,0 +1,12 @@
+items.find(
+{
+                "$and":
+                [
+                    {"@passRate" : {"$gte" : "1"}} ,
+		{"name" : {"$match" : "multi3*.war"}},
+        {"@*" :  "Scanned"},
+                    {"@testType" : {"$match" : "junit"}}
+                ]
+
+    }
+)

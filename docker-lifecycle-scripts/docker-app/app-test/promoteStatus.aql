@@ -1,0 +1,4 @@
+builds.find( {
+	"name":"@",
+	"number":"#"
+} ).include("name","number","promotion.status")

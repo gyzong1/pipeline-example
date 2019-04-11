@@ -1,0 +1,17 @@
+{
+    "status": "Released",
+    "comment" : "passed all tests and ready for release.",
+    "ciUser": "swampupCI",
+    "dryRun" : false,
+    "targetRepo" : {
+	"docker-app" : "docker-prod-local2",
+	"gradle_builds" : "gradle-release-local"
+    },
+    "copy": true,
+    "artifacts" : true,
+    "dependencies" : false,
+    "properties": {
+	"swampup": ["2016"]
+    },
+    "failFast": true
+}

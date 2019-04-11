@@ -1,0 +1,6 @@
+{
+    "sourceRepo" : "docker-local2",
+    "dockerImage" : "docker-framework",
+    "sourceTag" : "@",
+    "destTag" : "latest"
+}

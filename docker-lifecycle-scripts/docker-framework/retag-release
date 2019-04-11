@@ -1,0 +1,7 @@
+{
+    "targetRepo" : "docker-release-local",
+    "dockerRepository" : "docker-framework",
+    "tag" : "@",
+    "targetTag" : "latest",
+    "copy" : true
+}

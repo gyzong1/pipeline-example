@@ -1,0 +1,12 @@
+{
+    "key" : "docker-remote",
+    "rclass" : "remote",
+    "packageType" : "docker",
+    "url" : "http://192.168.1.139:8081/artifactory/api/docker/docker-dev",
+    "description" : "Remote Docker Registry",
+    "notes" : "This repo was created by configArt.sh, it is a chained remote of the lab docker repository.  Outside the classroom please change its url to https://registry-1.docker.io",
+    "forceDockerAuthentication" : true,
+    "includesPattern" : "**/*",
+    "excludesPattern" : "",
+    "repoLayoutRef" : "simple-default"
+}

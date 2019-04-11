@@ -1,0 +1,9 @@
+{
+    "key" : "swampup",
+    "rclass" : "remote",
+    "packageType" : "generic",
+    "url" : "http://192.168.1.139:8081/artifactory/jswampup-remote",
+    "description" : "This repository provides a local cache of the lab artifactory server for artifacts that are used during the course",
+    "notes" : "This repo was created by configArt.sh",
+    "propertySets" : [ "artifactory" ]
+}

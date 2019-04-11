@@ -1,0 +1,137 @@
+node {
+
+   // Get some code from a GitHub repository
+  git url: 'git@gitlab.com:yongqiang/docker-lifecycle-scripts.git', branch: 'webinar', credentialsId: 'lyqwaterway'
+  def artServer = Artifactory.server('artiha-demo')
+  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'art-docker-ci',
+  usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+    def uname=env.USERNAME
+    def pw=env.PASSWORD
+    artServer.username=uname
+    artServer.password=pw
+    def curlstr="curl -u"+uname+':'+pw+" 'http://47.93.114.82//artifactory/"
+    artServer = Artifactory.server('artiha-demo')
+    def artDocker= Artifactory.docker server: artServer
+    def buildInfo = Artifactory.newBuildInfo()
+    dir('docker-framework') {
+      buildInfo.env.capture = true
+      // Mark the code checkout 'stage'....
+      sh 'ls -al'
+      stage('Resolve') {
+        def tomcatverstr=curlstr+ "api/search/latestVersion?g=org.apache&a=apache-tomcat&repos=tomcat-local'"
+        println(tomcatverstr)
+        sh tomcatverstr+' > tomcat/version.txt'
+        env.TOMCAT_VERSION=readFile('tomcat/version.txt')
+        sh 'echo $TOMCAT_VERSION'
+        //sh 'rm -rf docker-framework/tomcat'
+        //sh 'rm -rf docker-framework/jdk'
+        
+        def downloadSpec = """{
+         "files": [
+          {
+           "pattern": "tomcat-local/java/jdk-8u91-linux-x64.tar.gz",
+           "target": "jdk/jdk-8-linux-x64.tar.gz",
+           "flat":"true"
+          },
+          {
+           "pattern": "tomcat-local/org/apache/apache-tomcat/apache-tomcat-"""+env.TOMCAT_VERSION+""".tar.gz",
+           "target": "tomcat/apache-tomcat-8.tar.gz",
+           "flat":"true"
+          }
+          ]
+        }"""
+
+        artServer.download(downloadSpec, buildInfo)
+        sh 'pwd'
+        sh 'ls -al jdk'
+        sh 'ls -al tomcat'
+        sh 'echo download complete'
+      }
+      stage('docker build') {
+        buildInfo.env.collect()
+        println('starting build '+env.BUILD_NUMBER)
+        def tagName='docker-dev-local2.demo.jfrogchina.com/docker-framework:'+env.BUILD_NUMBER
+        sh 'pwd'
+        sh 'ls -al'
+        sh 'cat Dockerfile'
+        docker.build(tagName)
+        buildInfo.env.vars['status2'] = 'pre-test'
+        artDocker.push(tagName, 'docker-dev-local2', buildInfo)
+
+        //artDocker.deployer.addProperty("status", "in-qa").addProperty("compatibility", "1", "2", "3")
+        artServer.publishBuildInfo(buildInfo)
+        println('Retagging Image')
+        sh 'sed -E "s/@/$BUILD_NUMBER/" retag-dev > retag_out_dev.json'
+        sh 'cat retag_out_dev.json'
+        def retagstr=curlstr+"api/docker/docker-dev-local2/v2/promote' -X POST -H 'Content-Type: application/json' -T retag_out_dev.json"
+        sh retagstr
+      }
+    }
+  }
+}
+node {
+  git url: 'git@gitlab.com:yongqiang/docker-lifecycle-scripts.git', branch: 'webinar', credentialsId: 'lyqwaterway'
+  def artServer = Artifactory.server('artiha-demo')
+  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'art-docker-ci',
+  usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+    def uname=env.USERNAME
+    def pw=env.PASSWORD
+    artServer.username=uname
+    artServer.password=pw
+    def curlstr="curl -u"+uname+':'+pw+" 'http://47.93.114.82/artifactory/"
+    artServer = Artifactory.server('artiha-demo')
+    def artDocker= Artifactory.docker server: artServer
+    dir('docker-framework/framework-test')
+    {
+      stage('testing') {
+        println('Get the latest version of the tomcat war from libs-release-local repo.  We only want war files that have been released')
+        def warverstr=curlstr+ "api/search/latestVersion?g=org.jfrog.test&a=multi3&repos=libs-release-local'"
+        sh warverstr +' > war/version.txt'
+        env.WARVER=readFile('war/version.txt')
+        def downloadSpecWar = """{
+ "files": [
+  {
+   "pattern": "libs-release-local/org/jfrog/test/multi3/"""+env.WARVER+"""/*.war",
+   "target": "war/webservice.war",
+   "flat":"true"
+  }
+  ]
+}""" //"//DownloadSpec
+        println(downloadSpecWar)
+        artServer.download(downloadSpecWar)
+        def tagNameTest='docker-dev-local2.demo.jfrogchina.com/docker-framework-test:'+env.BUILD_NUMBER
+        docker.build(tagNameTest)
+        docker.image(tagNameTest).withRun('-p 8181:8181') {c ->
+          sleep 5
+          sh 'curl "http://localhost:8181/swampup/"'
+        }
+      }
+      stage('promote') {
+        def promotionConfig = [
+          // Mandatory parameters
+          'buildName'          : env.JOB_NAME,
+          'buildNumber'        : env.BUILD_NUMBER,
+          'targetRepo'         : 'docker-release-local2',
+
+          // Optional parameters
+          'comment'            : 'Framework works with latest version of application to pass test',
+          'sourceRepo'         : 'docker-dev-local2',
+          'status'             : 'Released',
+          'includeDependencies': false,
+          'copy'               : true
+        ]
+
+        // Promote build
+        artServer.promote promotionConfig
+         dir('..') {
+            sh 'sed -E "s/@/$BUILD_NUMBER/" retag-release.json > retag_out_release.json'
+            sh 'cat retag_out_release.json'
+            def retagstr=curlstr+"api/docker/docker-release-local2/v2/promote' -X POST -H 'Content-Type: application/json' -T retag_out_release.json"
+            sh retagstr
+         }
+        
+        
+      }
+    }
+  }
+}

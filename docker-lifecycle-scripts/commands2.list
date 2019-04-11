@@ -1,0 +1,8 @@
+docker build -t jfrogtraining-docker-dev.jfrog.io/docker-framework:1 .
+docker push jfrogtraining-docker-dev.jfrog.io/docker-framework:1
+diff Dockerfile ../../docker-app/Dockerfile
+curl -umarkg -X POST "https://jfrogtraning.jfrog.io/jfrogtraining/api/docker/docker-dev-local/v2/promote" -H "Content-Type: application/json" -T retag1.json
+docker build -t framework-test .
+curl -umarkg -X POST "https://jfrogtraning.jfrog.io/jfrogtraining/api/docker/docker-dev-local/v2/promote" -H "Content-Type: application/json" -T dpromote.json
+docker build -t jfrogtraining-docker-dev.jfrog.io/docker-app:1 .
+curl -umarkg -X POST "https://jfrogtraning.jfrog.io/jfrogtraining/api/docker/docker-prod-local/v2/promote" -H "Content-Type: application/json" -T retag1.json

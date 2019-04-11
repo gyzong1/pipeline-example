@@ -1,0 +1,9 @@
+{
+    "key" : "tomcat-local",
+    "rclass" : "local",
+    "packageType" : "generic",
+    "description" : "This repository is for storing approved tomcat distributions locally.  The framework will use the latest version here to deploy to prod environments",
+    "notes" : "This repo was created by configArt.sh",
+    "repoLayoutRef" : "simple-default",
+    "propertySets" : [ "artifactory" ]
+}

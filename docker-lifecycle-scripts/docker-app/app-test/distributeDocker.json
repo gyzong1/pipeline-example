@@ -1,0 +1,8 @@
+{
+    "publish" : "true",
+    "overrideExistingFiles" : "true",
+    "async" : "false",
+    "targetRepos" : "jenkins-app-pipeline",
+    "sourceRepos" : ["docker-local2"],
+    "dryRun" : "false"
+}

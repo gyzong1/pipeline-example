@@ -1,0 +1,43 @@
+node {
+  // Mark the code checkout 'stage'....
+  stage 'Checkout'
+
+  // Get some code from a GitHub repository
+  git url: 'https://github.com/lyqwaterway/docker-lifecycle-scripts'
+  def artServer = Artifactory.server('artiha-demo')
+  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'art-docker-ci', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+    def uname=env.USERNAME
+    def pw=env.PASSWORD
+    artServer.username=uname
+    artServer.password=pw
+    sh 'echo credentials applied'
+    def curlstr="curl -u"+uname+':'+pw+" 'http://beijing.artifactory.com/artifactory/"
+    stage 'testing'
+    dir('docker-framework/framework-test')
+    {
+        def warverstr=curlstr+ "api/search/latestVersion?g=org.jfrog.example.gradle&a=webservice&repos=libs-release-local'"
+       sh warverstr +' > war/version.txt'
+       env.WARVER=readFile('war/version.txt')
+        def downloadSpecWar = """{
+ "files": [
+  {
+   "pattern": "libs-release-local/org/jfrog/example/gradle/webservice/"""+env.WARVER+"""/*.war",
+   "target": "war/webservice.war",
+   "flat":"true"
+  }
+  ]
+}"""
+    println(downloadSpecWar)
+    artServer.download(downloadSpecWar)
+        def tagNameTest='beijing.artifactory.com:5002/docker-framework-test:'+env.BUILD_NUMBER
+        docker.build(tagNameTest)
+withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'gcart-markg',
+usernameVariable: 'GCUSERNAME', passwordVariable: 'GCPASSWORD']]) { 
+    gcuname=env.GCUSERNAME
+    gcpw=env.GCPASSWORD
+    gcDocker=Artifactory.docker(gcuname, gcpw)
+    gcDocker.push(tagNameTest, 'docker-dev-local2')
+}
+    }
+}
+}
