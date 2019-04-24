@@ -3,18 +3,18 @@ node {
 // Parameters
 
   // docker
-  def DOCKER_URL = '192.168.230.147:8081'
+  def DOCKER_URL = 'jfrogchina.local:8081'
 
   // sonarqube
-  def SONAR_HOST_URL = 'http://192.168.230.147:9000'
-  def SONAR_SERVER = 'sonarqube-7.5'
-  def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
+  def SONAR_HOST_URL = 'http://jfrogchina.local:9000'
+  def SONAR_SERVER = 'sonar'
+  def SONAR_SCANNER_TOOL = 'sonarscanner'
   def SONAR_PROJECT_KEY = "${JOB_NAME}"
   def SONAR_SOURCES = 'maven-example/multi3/src'
  
   // artifactory
-  def ART_URL = 'http://192.168.230.147:8081/artifactory/'
-  def CREDENTIALSID = '61eb9b15-f4bb-4fec-b2ff-ff0648c0bd56'
+  def ART_URL = 'http://jfrogchina.local:8081/artifactory/'
+  def CREDENTIALSID = 'arti'
   def PASSWORDVARIABLE = 'PASSWORD'
   def USERNAMEVARIABLE = 'USERNAME'
   def SOURCEREPO = 'docker-dev-local'
@@ -23,7 +23,7 @@ node {
   def RESOLVE_RELEASE_REPO = 'maven-releases-virtual'
   def DEPLOY_SNAPSHOT_REPO = 'maven-snapshots-local'
   def DEPLOY_RELEASE_REPO = 'maven-releases-local'
-  def artServer = Artifactory.server('art1')
+  def artServer = Artifactory.server('arti-demo')
   def rtMaven = Artifactory.newMavenBuild()
   def buildInfo = Artifactory.newBuildInfo()
 
