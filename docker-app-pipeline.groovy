@@ -3,18 +3,18 @@ node {
 // Parameters
 
   // docker
-  def DOCKER_URL = '192.168.230.147:8081'
+  def DOCKER_URL = 'jfrogchina.local:8081'
 
   // sonarqube
-  def SONAR_HOST_URL = 'http://192.168.230.147:9000'
-  def SONAR_SERVER = 'sonarqube-7.5'
-  def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
+  def SONAR_HOST_URL = 'http://jfrogchina.local:9000'
+  def SONAR_SERVER = 'sonar'
+  def SONAR_SCANNER_TOOL = 'sonarscanner'
   def SONAR_PROJECT_KEY = "${JOB_NAME}"
   def SONAR_SOURCES = 'maven-example/multi3/src'
  
   // artifactory
-  def ART_URL = 'http://192.168.230.147:8081/artifactory/'
-  def CREDENTIALSID = '61eb9b15-f4bb-4fec-b2ff-ff0648c0bd56'
+  def ART_URL = 'http://jfrogchina.local:8081/artifactory/'
+  def CREDENTIALSID = 'arti'
   def PASSWORDVARIABLE = 'PASSWORD'
   def USERNAMEVARIABLE = 'USERNAME'
   def SOURCEREPO = 'docker-dev-local'
@@ -23,7 +23,7 @@ node {
   def RESOLVE_RELEASE_REPO = 'maven-releases-virtual'
   def DEPLOY_SNAPSHOT_REPO = 'maven-snapshots-local'
   def DEPLOY_RELEASE_REPO = 'maven-releases-local'
-  def artServer = Artifactory.server('art1')
+  def artServer = Artifactory.server('arti-demo')
   def rtMaven = Artifactory.newMavenBuild()
   def buildInfo = Artifactory.newBuildInfo()
 
@@ -44,7 +44,7 @@ node {
 
 dir("project-examples") {
 
-/*
+
   // Sonar 静态代码扫描
   stage('Sonar') {
     // Sonar scan
@@ -53,7 +53,6 @@ dir("project-examples") {
       sh "${scannerHome}/bin/sonar-scanner -Dsonar.language=java -Dsonar.projectKey=${JOB_NAME} -Dsonar.sources=${SONAR_SOURCES} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.java.binaries=*"
     }
   }
-
   //添加sonar扫描结果到包上
   stage("Sonar Quality Gate") {  
     sleep 5                     
@@ -72,11 +71,10 @@ dir("project-examples") {
         rtMaven.deployer.addProperty("sonar.quality.${measure.metric}", val)
       }
     }
-
     //增加sonar扫描结果到artifactory
     rtMaven.deployer.addProperty("qulity.gate.sonarUrl", SONAR_HOST_URL + "/dashboard/index/" + SONAR_PROJECT_KEY)
   }
-*/
+
   // 构建
   stage ('Build Maven') {
     rtMaven.resolver server: artServer, releaseRepo: RESOLVE_RELEASE_REPO, snapshotRepo: RESOLVE_SNAPSHOT_REPO
@@ -165,6 +163,20 @@ dir("docker-lifecycle-scripts") {
     }
   }
 
+/*
+  stage('xray scan') {
+    stage('xray scan') {
+      def xrayConfig = [
+              'buildName'  : buildInfo.name,
+              'buildNumber': buildInfo.number,
+              'failBuild'  : false
+      ]
+      def xrayResults = artiServer.xrayScan xrayConfig
+      echo xrayResults as String
+    }
+  }
+  
+  */
   
   stage('Promotions') {
     dir('docker-app/app-test') {
@@ -207,16 +219,32 @@ dir("docker-lifecycle-scripts") {
           
         def tagList = curlstr+"api/docker/docker-release-local/v2/docker-app/tags/list'"
         sh tagList;
-          
+      
         println("deploy docker-app image")
-        sh "docker stop docker-app"
-        sh "docker rm docker-app"
-        sh "docker rmi ${DOCKER_URL}/docker-virtual/docker-app:latest"
+        try {
+          sh "docker stop docker-app"
+        } catch (e) {
+              echo "docker-app is not running"
+        }
+
+        try {
+          sh "docker rm docker-app"
+        } catch (e) {
+              echo "docker-app has been deleted."
+        }
+
+        try {
+          sh "docker rmi ${DOCKER_URL}/docker-virtual/docker-app:latest"
+        } catch (e) {
+              echo "docker-app has been deleted."
+        }
+
         sh "docker run -d --name docker-app -p 19999:8181 ${DOCKER_URL}/docker-virtual/docker-app:latest"
 
         def deployResult = curlstr+"api/storage/docker-release-local/docker-app/latest/manifest.json?properties=deploy.server=production;deploy.warVersion=multi3-"+env.WARVER+";deploy.dockerTag="+env.BUILD_NUMBER+"' -X PUT"
         println("write deployResult back:" + deployResult);
         sh deployResult;
+
       }
     }
   }
