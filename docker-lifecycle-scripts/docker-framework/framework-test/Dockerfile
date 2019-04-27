@@ -2,7 +2,7 @@ FROM docker_ip/docker-framework:latest
 
 MAINTAINER Mark guoyunzong gyzong1@163.com
 
-CMD /bin/bash -c ls;
+RUN ls /home/apache-tomcat-8.5.37
 
 ADD war/*.war /home/apache-tomcat-8.5.37/webapps/swampup.war
 
