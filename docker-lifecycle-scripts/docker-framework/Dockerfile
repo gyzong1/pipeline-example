@@ -2,7 +2,7 @@ FROM centos:latest
 
 MAINTAINER guoyunzong gyzong1@163.com
 
-RUN /bin/bash ls
+RUN  ls
 # RUN /bin/bash -c cd ~; cd /home ; mkdir -p exec
 ADD jdk/jdk-8-linux-x64.tar.gz /home
 CMD /bin/bash -c tar zxf /home/jdk-8-linux-x64.tar.gz -C /home
