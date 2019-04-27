@@ -1,5 +1,4 @@
 FROM centos:latest
-# FROM centos:latest
 
 MAINTAINER guoyunzong gyzong1@163.com
 
