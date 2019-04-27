@@ -14,6 +14,7 @@ RUN sed "/securerandom.source=/{s/file:\/dev\/random/file:\/dev\/urandom/}" /hom
 ADD  tomcat/apache-tomcat-8.tar.gz /home
 # RUN /bin/tar zxf /home/apache-tomcat-8.5.37.tar.gz -C /home
 CMD /bin/bash -c tar zxf /home/apache-tomcat-8.tar.gz -C /home
+RUN  ls /home/apache-tomcat-8.5.37
 # RUN /bin/bash -c cd /home/exec; mv /home/exec/apache-tomcat-8.* /home/exec/tomcat
 ADD tomcat/server.xml /home/apache-tomcat-8.5.37/conf
 ENV CATALINA_HOME=/home/apache-tomcat-8.5.37
