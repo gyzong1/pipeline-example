@@ -1,6 +1,8 @@
 FROM centos:latest
 
-MAINTAINER guoyunzong gyzong11@163.com
+MAINTAINER guoyunzong gyzong1@163.com
+
+RUN mkdir -p /home/test
 
 # RUN /bin/bash -c cd ~; cd /home ; mkdir -p exec
 ADD jdk/jdk-8-linux-x64.tar.gz /home
