@@ -8,7 +8,7 @@ node {
         sh 'jfrog rt use art1'
     }
     stage('SCM') {
-        cleanWs()
+        // cleanWs()
         sh 'ls'
         git([url: 'https://github.com/gyzong1/pipeline-example.git', branch: 'master'])
     }
