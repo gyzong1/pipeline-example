@@ -13,13 +13,13 @@ node {
         git([url: 'https://github.com/gyzong1/pipeline-example.git', branch: 'master'])
     }
     stage('Build') {
-        dir(project-examplts/npm-example) {
+        dir(project-examples/npm-example) {
           sh "jfrog rt npm-install npm-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
           sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
     stage('Publish') {
-        dir(project-examplts/npm-example) {
+        dir(project-examples/npm-example) {
           sh "jfrog rt npm-publish npm-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
