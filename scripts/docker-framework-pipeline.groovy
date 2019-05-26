@@ -50,7 +50,7 @@ dir('project-examples') {
   }
 }
 
-dir('Docker-lifecycle-scripts') {
+dir('docker-lifecycle-scripts') {
 
   stage('Resolve') {
     dir('docker-framework') {
