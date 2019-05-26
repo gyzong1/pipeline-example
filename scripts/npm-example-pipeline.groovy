@@ -24,7 +24,7 @@ node {
     }
 
     stage ('Publish npm') {
-        rtNpm.publish buildInfo: buildInfo, path: 'project-examplts/npm-example'
+        rtNpm.publish buildInfo: buildInfo, path: 'project-examples/npm-example'
     }
 
     stage ('Publish build info') {
