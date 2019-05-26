@@ -5,23 +5,23 @@ node {
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo = Artifactory.newBuildInfo()
     def descriptor = Artifactory.mavenDescriptor()
-    def ARTIFACTORY_URL = 'http://test.artifactory.com/artifactory/'
-    def ARTIFACTORY_API_KEY = 'AKCp5cbnH3M2ZUwYRSeiepKCQLJJYfVTu5Mgnm7c5AsP3xNAbjmAjGjZAmLtXp4CoTGbfP5HC'
-    def RESOLVE_SNAPSHOT_REPO = 'libs-snapshot'
-    def RESOLVE_RELEASE_REPO = 'libs-release'
-    def DEPLOY_SNAPSHOT_REPO = 'libs-snapshot1-local'
-    def DEPLOY_RELEASE_REPO = 'libs-release1-local'
+    def ARTIFACTORY_URL = 'http://192.168.230.155:8081/artifactory/'
+    def ARTIFACTORY_API_KEY = 'AKCp5ccv3oMbQuovKWLzCdRW2RnZW9Qb4agjxVA931J9SsJwwkEuAe1yknQtMBegJvDq8RSr8'
+    def RESOLVE_SNAPSHOT_REPO = 'maven-virtual'
+    def RESOLVE_RELEASE_REPO = 'maven-virtual'
+    def DEPLOY_SNAPSHOT_REPO = 'maven-dev-local'
+    def DEPLOY_RELEASE_REPO = 'maven-dev-local'
 
-    def PROMOTION_SOURCE_REPO = 'libs-snapshot1-local'
-    def PROMOTION_TARGET_REPO = 'libs-release2-local'
+    def PROMOTION_SOURCE_REPO = 'maven-dev-local'
+    def PROMOTION_TARGET_REPO = 'maven-pro-local'
 
     //maven
     def MAVEN_TOOL = 'maven'
     def MAVEN_GOALS = 'clean install'
-    def POM_PATH = 'maven-example/pom.xml'
+    def POM_PATH = 'project-examples/maven-example/pom.xml'
 
     //git
-    def GIT_URL = 'https://github.com/gyzong1/project-examples.git'
+    def GIT_URL = 'https://github.com/gyzong1/pipeline-example.git'
     def BRANCH = 'master'
  //   def GIT_CREDENTIALS_ID = 'my-git-hub'
 
@@ -65,6 +65,8 @@ node {
                 echo "收集系统变量"
                 buildInfo.env.capture = true
             }
+            
+            /*
             //Sonar 静态代码扫描
             stage('Sonar') {
                 // Sonar scan
@@ -120,6 +122,8 @@ node {
                 echo "revisionIds : ${revisionIds}"
                 rtMaven.deployer.addProperty("project.issues", requirements).addProperty("project.revisionIds", revisionIds)
             }
+            */
+            
             //maven 构建
             stage('mvn build') {
                 rtMaven.deployer.deployArtifacts = false
@@ -171,7 +175,7 @@ node {
                 
                 }
 */
-
+            /*
             stage('xray scan') {
                 def xrayConfig = [
                         'buildName'  : buildInfo.name,
@@ -181,7 +185,8 @@ node {
                 def xrayResults = artiServer.xrayScan xrayConfig
                 echo xrayResults as String
             }
-
+            */
+            
             //promotion操作，进行包的升级
             stage('promotion') {
                 def promotionConfig = [
