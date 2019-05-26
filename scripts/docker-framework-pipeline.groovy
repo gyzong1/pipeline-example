@@ -14,7 +14,7 @@ node {
  
   // artifactory
   def ART_URL = 'http://192.168.230.155:8081/artifactory/'
-  def CREDENTIALSID = 'art1'
+  def CREDENTIALSID = '091d6033-67ae-4672-87a9-7c79f308ba4a'
   def PASSWORDVARIABLE = 'PASSWORD'
   def USERNAMEVARIABLE = 'USERNAME'
   def SOURCEREPO = 'docker-dev-local'
