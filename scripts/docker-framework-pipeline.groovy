@@ -133,14 +133,14 @@ dir('docker-lifecycle-scripts') {
         def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
         def artDocker= Artifactory.docker server: artServer
 
-        println('Get the latest version of the tomcat war from maven-snapshots-local repo.  We only want war files that have been released')
-        def warverstr=curlstr+ "api/search/latestVersion?g=org.jfrog.test&a=multi3&repos=maven-snapshots-local&v=3.7-SNAPSHOT'"
+        println('Get the latest version of the tomcat war from maven-dev-local repo.  We only want war files that have been released')
+        def warverstr=curlstr+ "api/search/latestVersion?g=org.jfrog.test&a=multi3&repos=maven-dev-local&v=3.7-SNAPSHOT'"
         sh warverstr +' > war/version.txt'
         env.WARVER=readFile('war/version.txt')
         def downloadSpecWar = """{
           "files": [
            {
-            "pattern": "maven-snapshots-local/org/jfrog/test/multi3/3.7-SNAPSHOT/multi3-"""+env.WARVER+""".war",
+            "pattern": "maven-dev-local/org/jfrog/test/multi3/3.7-SNAPSHOT/multi3-"""+env.WARVER+""".war",
             "target": "war/webservice.war",
             "flat": "true"
            }
