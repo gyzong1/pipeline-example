@@ -33,7 +33,7 @@ node {
   // maven
   def MAVEN_TOOL = 'maven'
   def MAVEN_GOALS = 'clean install'
-  def POM_PATH = 'project-examples/maven-example/pom.xml'
+  def POM_PATH = 'maven-example/pom.xml'
 
   // -------------------------------------------------------------------------------------------------------
 
