@@ -18,7 +18,7 @@ node {
   def PASSWORDVARIABLE = 'PASSWORD'
   def USERNAMEVARIABLE = 'USERNAME'
   def SOURCEREPO = 'docker-dev-local'
-  def TARGETREPO = 'docker-release-local'
+  def TARGETREPO = 'docker-pro-local'
   def RESOLVE_SNAPSHOT_REPO = 'maven-virtual'
   def RESOLVE_RELEASE_REPO = 'maven-virtual'
   def DEPLOY_SNAPSHOT_REPO = 'maven-dev-local'
@@ -33,7 +33,7 @@ node {
   // maven
   def MAVEN_TOOL = 'maven'
   def MAVEN_GOALS = 'clean install'
-  def POM_PATH = 'maven-example/pom.xml'
+  def POM_PATH = 'project-examples/maven-example/pom.xml'
 
   // -------------------------------------------------------------------------------------------------------
 
@@ -190,7 +190,7 @@ dir('Docker-lifecycle-scripts') {
           sh 'ls -l'
             sh 'sed -E "s/@/$BUILD_NUMBER/" retag-release.json > retag_out_release.json'
             sh 'cat retag_out_release.json'
-            def retagstr=curlstr+"api/docker/docker-release-local/v2/promote' -X POST -H 'Content-Type: application/json' -T retag_out_release.json"
+            def retagstr=curlstr+"api/docker/docker-pro-local/v2/promote' -X POST -H 'Content-Type: application/json' -T retag_out_release.json"
             sh retagstr
          }
       }
