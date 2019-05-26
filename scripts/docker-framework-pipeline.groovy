@@ -3,32 +3,32 @@ node {
 // Parameters
 
   // docker
-  def DOCKER_URL = 'jfrogchina.local:8081'
+  def DOCKER_URL = '192.168.230.155:8081'
 
   // sonarqube
-  def SONAR_HOST_URL = 'http://jfrogchina.local:9000'
+  def SONAR_HOST_URL = 'http://192.168.230.155:9000'
   def SONAR_SERVER = 'sonar'
   def SONAR_SCANNER_TOOL = 'sonarscanner'
   def SONAR_PROJECT_KEY = "${JOB_NAME}"
   def SONAR_SOURCES = 'maven-example/multi3/src'
  
   // artifactory
-  def ART_URL = 'http://jfrogchina.local:8081/artifactory/'
-  def CREDENTIALSID = 'arti'
+  def ART_URL = 'http://192.168.230.155:8081/artifactory/'
+  def CREDENTIALSID = 'art1'
   def PASSWORDVARIABLE = 'PASSWORD'
   def USERNAMEVARIABLE = 'USERNAME'
   def SOURCEREPO = 'docker-dev-local'
   def TARGETREPO = 'docker-release-local'
-  def RESOLVE_SNAPSHOT_REPO = 'maven-snapshots-virtual'
-  def RESOLVE_RELEASE_REPO = 'maven-releases-virtual'
-  def DEPLOY_SNAPSHOT_REPO = 'maven-snapshots-local'
-  def DEPLOY_RELEASE_REPO = 'maven-releases-local'
-  def artServer = Artifactory.server('arti-demo')
+  def RESOLVE_SNAPSHOT_REPO = 'maven-virtual'
+  def RESOLVE_RELEASE_REPO = 'maven-virtual'
+  def DEPLOY_SNAPSHOT_REPO = 'maven-dev-local'
+  def DEPLOY_RELEASE_REPO = 'maven-pro-local'
+  def artServer = Artifactory.server('art1')
   def rtMaven = Artifactory.newMavenBuild()
   def buildInfo = Artifactory.newBuildInfo()
 
   // git
-  def GIT_URL = 'https://github.com/gyzong1/JfrogChina.git'
+  def GIT_URL = 'https://github.com/gyzong1/pipeline-example.git'
 
   // maven
   def MAVEN_TOOL = 'maven'
@@ -50,7 +50,7 @@ dir('project-examples') {
   }
 }
 
-dir('docker-lifecycle-scripts') {
+dir('Docker-lifecycle-scripts') {
 
   stage('Resolve') {
     dir('docker-framework') {
