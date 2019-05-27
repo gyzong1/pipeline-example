@@ -34,6 +34,8 @@ node {
   def MAVEN_TOOL = 'maven'
   def MAVEN_GOALS = 'clean install'
   def POM_PATH = 'maven-example/pom.xml'
+  
+  env.JOB_NAME = "aaaa:: bb" + env.BUILD_NUMBER
 
   // -------------------------------------------------------------------------------------------------------
 
