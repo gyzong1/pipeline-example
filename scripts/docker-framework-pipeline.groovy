@@ -174,7 +174,7 @@ dir('docker-lifecycle-scripts') {
         artServer.password=pw
         def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
 
-        def artDocker= Artifactory.docker server: artServer   
+        ////////def artDocker= Artifactory.docker server: artServer   
         def promotionConfig = [
           'buildName'          : env.JOB_NAME,
           'buildNumber'        : env.BUILD_NUMBER,
