@@ -25,7 +25,7 @@ node {
   def DEPLOY_RELEASE_REPO = 'maven-pro-local'
   def artServer = Artifactory.server('art1')
   def rtMaven = Artifactory.newMavenBuild()
-  //def buildInfo = Artifactory.newBuildInfo()
+  def buildInfo = Artifactory.newBuildInfo()
 
   // git
   def GIT_URL = 'https://github.com/gyzong1/pipeline-example.git'
