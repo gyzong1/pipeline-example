@@ -25,7 +25,7 @@ node {
   def DEPLOY_RELEASE_REPO = 'maven-releases-local'
   def artServer = Artifactory.server('arti-demo')
   def rtMaven = Artifactory.newMavenBuild()
-  def buildInfo = Artifactory.newBuildInfo()
+ // def buildInfo = Artifactory.newBuildInfo()
 
   // git
   def GIT_URL = 'https://github.com/gyzong1/JfrogChina.git'
