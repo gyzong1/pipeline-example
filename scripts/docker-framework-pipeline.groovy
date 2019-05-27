@@ -35,7 +35,6 @@ node {
   def MAVEN_GOALS = 'clean install'
   def POM_PATH = 'maven-example/pom.xml'
   
-  env.JOB_NAME = "aaaa:: bb" + env.BUILD_NUMBER
 
   // -------------------------------------------------------------------------------------------------------
 
@@ -62,7 +61,7 @@ dir('docker-lifecycle-scripts') {
         artServer.username=uname
         artServer.password=pw
         def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
-        def artDocker= Artifactory.docker server: artServer
+        /////////def artDocker= Artifactory.docker server: artServer
         def tomcatverstr=curlstr+ "api/search/latestVersion?g=org.apache&a=apache-tomcat&repos=tomcat-local'"
         println(tomcatverstr)
         sh tomcatverstr+' > tomcat/version.txt'
@@ -101,7 +100,7 @@ dir('docker-lifecycle-scripts') {
         artServer.username=uname
         artServer.password=pw
         def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
-        def artDocker= Artifactory.docker server: artServer
+        ////////def artDocker= Artifactory.docker server: artServer
 
         buildInfo.env.collect()
         println('starting build '+env.BUILD_NUMBER)
@@ -133,7 +132,7 @@ dir('docker-lifecycle-scripts') {
         artServer.username=uname
         artServer.password=pw
         def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
-        def artDocker= Artifactory.docker server: artServer
+        ///////////def artDocker= Artifactory.docker server: artServer
 
         println('Get the latest version of the tomcat war from maven-dev-local repo.  We only want war files that have been released')
         def warverstr=curlstr+ "api/search/latestVersion?g=org.jfrog.test&a=multi3&repos=maven-dev-local&v=3.7-SNAPSHOT'"
