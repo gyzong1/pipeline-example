@@ -35,6 +35,8 @@ node {
   def MAVEN_GOALS = 'clean install'
   def POM_PATH = 'maven-example/pom.xml'
   
+          def artDocker= Artifactory.docker server: artServer
+  
 
   // -------------------------------------------------------------------------------------------------------
 
