@@ -2,7 +2,7 @@
     "publish" : "true",
     "overrideExistingFiles" : "true",
     "async" : "false",
-    "targetRepos" : "jenkins-app-pipeline",
-    "sourceRepos" : ["docker-local2"],
+    "targetRepos" : "docker-virtual",
+    "sourceRepos" : ["docker-dev-local"],
     "dryRun" : "false"
 }
