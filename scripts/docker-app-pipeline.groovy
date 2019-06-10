@@ -3,7 +3,7 @@ node {
 // Parameters
 
   // docker
-  def DOCKER_URL = '192.168.230.155:8081'
+  def DOCKER_URL = '192.168.230.155'
 
   // sonarqube
   def SONAR_HOST_URL = 'http://192.168.230.158:9000'
