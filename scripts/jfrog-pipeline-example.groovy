@@ -83,10 +83,10 @@ node {
                 //timeout(time: 1, unit: 'HOURS') {
                 //timeout(time: 5, unit: 'MINUTES') {
                     // Just in case something goes wrong, pipeline will be killed after a timeout
-                    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-                    if (qg.status != 'OK') {
-                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                    } else {
+                //    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                //    if (qg.status != 'OK') {
+                //        error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                //    } else {
                         
                         //获取sonar扫描结果
                         def surl="${SONAR_HOST_URL}/api/measures/component?componentKey=${SONAR_PROJECT_KEY}&metricKeys=alert_status,quality_gate_details,coverage,new_coverage,bugs,new_bugs,reliability_rating,vulnerabilities,new_vulnerabilities,security_rating,sqale_rating,sqale_index,sqale_debt_ratio,new_sqale_debt_ratio,duplicated_lines_density&additionalFields=metrics,periods"
@@ -104,7 +104,7 @@ node {
                                 }
                                 rtMaven.deployer.addProperty("sonar.quality.${measure.metric}", val)
                             }
-                        }
+                 //       }
 
                         //增加sonar扫描结果到artifactory
                         rtMaven.deployer.addProperty("qulity.gate.sonarUrl", SONAR_HOST_URL + "/dashboard/index/" + SONAR_PROJECT_KEY)
