@@ -30,7 +30,7 @@ node {
     def SONAR_SERVER = 'sonarqube'
     def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
     def SONAR_PROJECT_KEY = "${JOB_NAME}"
-    def SONAR_SOURCES = 'maven-example/multi3/src'
+    def SONAR_SOURCES = 'project-examples/maven-example/multi3/src'
 
     //docker
     //def DOCKER_IMAGE_NAME = 'java-mvn-sonar-tomcat'
