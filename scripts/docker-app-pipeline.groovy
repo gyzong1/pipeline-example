@@ -3,32 +3,33 @@ node {
 // Parameters
 
   // docker
-  def DOCKER_URL = 'jfrogchina.local:8081'
+  def DOCKER_URL = '192.168.230.155:8081'
 
   // sonarqube
-  def SONAR_HOST_URL = 'http://jfrogchina.local:9000'
-  def SONAR_SERVER = 'sonar'
-  def SONAR_SCANNER_TOOL = 'sonarscanner'
+  def SONAR_HOST_URL = 'http://192.168.230.158:9000'
+  def SONAR_SERVER = 'sonarqube'
+  def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
   def SONAR_PROJECT_KEY = "${JOB_NAME}"
   def SONAR_SOURCES = 'maven-example/multi3/src'
  
   // artifactory
-  def ART_URL = 'http://jfrogchina.local:8081/artifactory/'
-  def CREDENTIALSID = 'arti'
+  def ART_URL = 'http://192.168.230.155:8081/artifactory/'
+  def CREDENTIALSID = '091d6033-67ae-4672-87a9-7c79f308ba4a'
   def PASSWORDVARIABLE = 'PASSWORD'
   def USERNAMEVARIABLE = 'USERNAME'
   def SOURCEREPO = 'docker-dev-local'
-  def TARGETREPO = 'docker-release-local'
-  def RESOLVE_SNAPSHOT_REPO = 'maven-snapshots-virtual'
-  def RESOLVE_RELEASE_REPO = 'maven-releases-virtual'
-  def DEPLOY_SNAPSHOT_REPO = 'maven-snapshots-local'
-  def DEPLOY_RELEASE_REPO = 'maven-releases-local'
-  def artServer = Artifactory.server('arti-demo')
+  def TARGETREPO = 'docker-pro-local'
+  def RESOLVE_SNAPSHOT_REPO = 'maven-virtual'
+  def RESOLVE_RELEASE_REPO = 'maven-virtual'
+  def DEPLOY_SNAPSHOT_REPO = 'maven-dev-local'
+  def DEPLOY_RELEASE_REPO = 'maven-pro-local'
+  def artServer = Artifactory.server('art1')
   def rtMaven = Artifactory.newMavenBuild()
   def buildInfo = Artifactory.newBuildInfo()
+  def artDocker= Artifactory.docker server: artServer
 
   // git
-  def GIT_URL = 'https://github.com/gyzong1/JfrogChina.git'
+  def GIT_URL = 'https://github.com/gyzong1/pipeline-example.git'
 
   // maven
   def MAVEN_TOOL = 'maven'
@@ -95,13 +96,13 @@ dir("docker-lifecycle-scripts") {
         artServer.password=pw
         sh 'echo credentials applied'
         def curlstr="curl -u"+uname+':'+pw+" "+"\'"+ART_URL
-        def warverstr=curlstr+ "api/search/latestVersion?g=org.jfrog.test&a=multi3&repos=maven-snapshots-local&v=3.7-SNAPSHOT'"
+        def warverstr=curlstr+ "api/search/latestVersion?g=org.jfrog.test&a=multi3&repos=maven-dev-local&v=3.7-SNAPSHOT'"
         sh warverstr +' > war/version.txt'
         env.WARVER=readFile('war/version.txt')
         def downloadSpec = """{
           "files": [
             {
-              "pattern": "maven-snapshots-local/org/jfrog/test/multi3/3.7-SNAPSHOT/multi3-"""+env.WARVER+""".war",
+              "pattern": "maven-dev-local/org/jfrog/test/multi3/3.7-SNAPSHOT/multi3-"""+env.WARVER+""".war",
               "target": "war/webservice.war",
               "flat": "true"
             }
@@ -152,7 +153,7 @@ dir("docker-lifecycle-scripts") {
           sh 'curl "http://localhost:8181/swampup/"'
         }
 
-        def testWarResult = curlstr+"api/storage/maven-snapshots-local/org/jfrog/test/multi3/3.7-SNAPSHOT/multi3-"+env.WARVER+".war?properties=qa.testType=junit,selenium;qa.status=approved;' -X PUT"
+        def testWarResult = curlstr+"api/storage/maven-dev-local/org/jfrog/test/multi3/3.7-SNAPSHOT/multi3-"+env.WARVER+".war?properties=qa.testType=junit,selenium;qa.status=approved;' -X PUT"
         println("write testResult back:" + testWarResult);
         sh testWarResult;
 
@@ -197,7 +198,7 @@ dir("docker-lifecycle-scripts") {
         sh dockerstr
         sh 'sed -E "s/@/$BUILD_NUMBER/" retag.json > retag_out.json'
         sh 'cat retag_out.json'
-        def retagstr=curlstr+"api/docker/docker-release-local/v2/promote' -X POST -H 'Content-Type: application/json' -T retag_out.json"
+        def retagstr=curlstr+"api/docker/docker-pro-local/v2/promote' -X POST -H 'Content-Type: application/json' -T retag_out.json"
         sh retagstr
       }
     }
@@ -217,7 +218,7 @@ dir("docker-lifecycle-scripts") {
         println(aqlSearch)
         sh aqlSearch;
           
-        def tagList = curlstr+"api/docker/docker-release-local/v2/docker-app/tags/list'"
+        def tagList = curlstr+"api/docker/docker-pro-local/v2/docker-app/tags/list'"
         sh tagList;
       
         println("deploy docker-app image")
@@ -241,7 +242,7 @@ dir("docker-lifecycle-scripts") {
 
         sh "docker run -d --name docker-app -p 19999:8181 ${DOCKER_URL}/docker-virtual/docker-app:latest"
 
-        def deployResult = curlstr+"api/storage/docker-release-local/docker-app/latest/manifest.json?properties=deploy.server=production;deploy.warVersion=multi3-"+env.WARVER+";deploy.dockerTag="+env.BUILD_NUMBER+"' -X PUT"
+        def deployResult = curlstr+"api/storage/docker-pro-local/docker-app/latest/manifest.json?properties=deploy.server=production;deploy.warVersion=multi3-"+env.WARVER+";deploy.dockerTag="+env.BUILD_NUMBER+"' -X PUT"
         println("write deployResult back:" + deployResult);
         sh deployResult;
 
