@@ -26,8 +26,8 @@ node {
  //   def GIT_CREDENTIALS_ID = 'my-git-hub'
 
     //sonar
-    def SONAR_HOST_URL = 'http://192.168.230.144:9000'
-    def SONAR_SERVER = 'sonarqube-7.5'
+    def SONAR_HOST_URL = 'http://192.168.230.158:9000'
+    def SONAR_SERVER = 'sonarqube'
     def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
     def SONAR_PROJECT_KEY = "${JOB_NAME}"
     def SONAR_SOURCES = 'maven-example/multi3/src'
@@ -66,7 +66,7 @@ node {
                 buildInfo.env.capture = true
             }
             
-            /*
+            
             //Sonar 静态代码扫描
             stage('Sonar') {
                 // Sonar scan
@@ -122,7 +122,7 @@ node {
                 echo "revisionIds : ${revisionIds}"
                 rtMaven.deployer.addProperty("project.issues", requirements).addProperty("project.revisionIds", revisionIds)
             }
-            */
+            
             
             //maven 构建
             stage('mvn build') {
