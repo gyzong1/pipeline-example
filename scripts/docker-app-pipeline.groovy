@@ -26,7 +26,6 @@ node {
   def artServer = Artifactory.server('art1')
   def rtMaven = Artifactory.newMavenBuild()
   def buildInfo = Artifactory.newBuildInfo()
-  def artDocker= Artifactory.docker server: artServer
 
   // git
   def GIT_URL = 'https://github.com/gyzong1/pipeline-example.git'
