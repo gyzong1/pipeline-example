@@ -10,7 +10,7 @@ node {
   def SONAR_SERVER = 'sonarqube'
   def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
   def SONAR_PROJECT_KEY = "${JOB_NAME}"
-  def SONAR_SOURCES = 'project-examples/maven-example/multi3/src'
+  def SONAR_SOURCES = 'maven-example/multi3/src'
  
   // artifactory
   def ART_URL = 'http://192.168.230.155:8081/artifactory/'
@@ -34,7 +34,7 @@ node {
   // maven
   def MAVEN_TOOL = 'maven'
   def MAVEN_GOALS = 'clean install'
-  def POM_PATH = 'project-examples/maven-example/pom.xml'
+  def POM_PATH = 'maven-example/pom.xml'
   
   
 
