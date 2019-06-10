@@ -1,5 +1,5 @@
 {
-    "sourceRepo" : "docker-prod-local2",
+    "sourceRepo" : "docker-prod-local",
     "dockerImage" : "docker-app",
     "sourceTag" : "@",
     "destTag" : "latest"
