@@ -2,7 +2,7 @@
     "publish" : "true",
     "overrideExistingFiles" : "true",
     "async" : "false",
-    "targetRepo" : "jenkins-app-pipeline",
-    "sourceRepos" : ["libs-release-local"],
+    "targetRepo" : "maven-pro-local",
+    "sourceRepos" : ["maven-dev-local"],
     "dryRun" : "false"
 }
