@@ -1,5 +1,5 @@
 {
-    "targetRepo" : "docker-prod-local",
+    "targetRepo" : "docker-pro-local",
     "dockerRepository" : "docker-app",
     "tag" : "2",
     "copy": false
