@@ -1,7 +1,7 @@
 node {
     
     env.NODE_HOME=tool name: 'go', type: 'go'
-    env.PATH="${env.GOROOT}/bin:${env.PATH}"
+    env.PATH="/usr/local/go/bin:${env.PATH}"
     
     stage('Prepare') {
         sh 'jfrog rt c art1 --url=http://192.168.230.155:8081/artifactory --user=admin --password=password'        // 此处使用域名不好使，具体原因待查
