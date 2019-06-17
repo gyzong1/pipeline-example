@@ -3,7 +3,7 @@
         git url :'https://github.com/memsharded/example-poco-timer.git'
 
          // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
-        def server = Artifactory.server art1
+        def server = Artifactory.server 'art1'
 
         // Create a local build-info instance:
         def buildInfo = Artifactory.newBuildInfo()
