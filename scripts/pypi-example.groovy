@@ -14,25 +14,25 @@ node {
     }
     
     stage('Build') {
-        dir('project-examples/golang-example/python-example') {
+        dir('project-examples/python-example') {
           sh "pip install -r requirements.txt"
         }
     }
     
     stage('Publish packages') {
-        dir('project-examples/golang-example/python-example') {
+        dir('project-examples/python-example') {
           sh "python setup.py sdist upload -r local"
         }
     }
     
     stage('Collect environment variables') {
-        dir('project-examples/golang-example/python-example') {
+        dir('project-examples/python-example') {
           sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
     
     stage('Publish the build info') {
-        dir('project-examples/golang-example/python-example') {
+        dir('project-examples/python-example') {
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
