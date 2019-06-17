@@ -15,7 +15,7 @@ def user_name = 'admin'
 def user_apikey = 'AKCp5ccv3oMbQuovKWLzCdRW2RnZW9Qb4agjxVA931J9SsJwwkEuAe1yknQtMBegJvDq8RSr8'
 
 // Source Code project in github
-def repo_url = 'https://github.com/xingao0803/demo-poco-timer.git'
+def repo_url = 'https://github.com/gyzong1/demo-poco-timer.git'
 def repo_branch = 'master'
 
 node {
