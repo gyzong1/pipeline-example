@@ -5,10 +5,10 @@ def artifactory_server = 'art1'
 def artifactory_repo = 'conan-virtual-local'
 
 // Binary dev repository in Artifactory server
-def dev_repo = 'conanapp-dev-local'
+def dev_repo = 'conan-dev-local'
 
 // Binary release repository in Artifactory server
-def release_repo = 'conanapp-pro-local'
+def release_repo = 'conan-pro-local'
 
 // User/Pass for Artifactory server
 def user_name = 'admin'
