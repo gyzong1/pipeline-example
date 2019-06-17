@@ -1,7 +1,7 @@
 node {
     
-    env.NODE_HOME=tool name: 'go', type: 'go'
-    env.PATH="/usr/local/go/bin:${env.PATH}"
+    //env.NODE_HOME=tool name: 'go', type: 'go'
+    //env.PATH="/usr/local/go/bin:${env.PATH}"
     
     stage('Prepare') {
         sh 'jfrog rt c art1 --url=http://192.168.230.155:8081/artifactory --user=admin --password=password'        // 此处使用域名不好使，具体原因待查
@@ -14,25 +14,25 @@ node {
     }
     
     stage('Build') {
-        dir('project-examples/golang-example/hello') {
-          sh "jfrog rt go build go-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+        dir('project-examples/golang-example/python-example') {
+          sh "pip install -r requirements.txt"
         }
     }
     
     stage('Publish packages') {
-        dir('project-examples/golang-example/hello') {
-          sh "jfrog rt gp go-virtual v1.0.0 --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+        dir('project-examples/golang-example/python-example') {
+          sh "python setup.py sdist upload -r local"
         }
     }
     
     stage('Collect environment variables') {
-        dir('project-examples/golang-example/hello') {
+        dir('project-examples/golang-example/python-example') {
           sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
     
     stage('Publish the build info') {
-        dir('project-examples/golang-example/hello') {
+        dir('project-examples/golang-example/python-example') {
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
