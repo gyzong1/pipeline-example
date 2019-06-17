@@ -1,209 +1,31 @@
-// Artifactory server instance, defined in Jenkins --> Manage:
-def artifactory_server = 'art1'
+ node {
+        // Clone the code from github:
+        git url :'https://github.com/memsharded/example-poco-timer.git'
 
-// Conan repository in Artifactory server
-def artifactory_repo = 'conan-virtual'
-
-// Binary dev repository in Artifactory server
-def dev_repo = 'conan-dev-local'
-
-// Binary release repository in Artifactory server
-def release_repo = 'conan-pro-local'
-
-// User/Pass for Artifactory server
-def user_name = 'admin'
-def user_apikey = 'AKCp5ccv3oMbQuovKWLzCdRW2RnZW9Qb4agjxVA931J9SsJwwkEuAe1yknQtMBegJvDq8RSr8'
-
-// Source Code project in github
-def repo_url = 'https://github.com/gyzong1/demo-poco-timer.git'
-def repo_branch = 'master'
-
-node {
-    def server
-    def client
-    def serverName
-    def buildInfo
-    def settings
-    def test = false
-    def deploy = false
-
-    stage("Get project"){
-        // Clone source code from github:
-        git branch: repo_branch, url: repo_url
-    }
-    
-    stage("Configure Artifactory/Conan"){
-        // Obtain an Artifactory server instance: 
-        server = Artifactory.server artifactory_server
-
-        // Create a conan client instance:
-        client = Artifactory.newConanClient()
- 
-        // Add a new repository to the conan client.
-        // The 'remote.add' method returns a 'serverName' string, which is used later in the script:
-        serverName = client.remote.add server: server, repo: artifactory_repo
+         // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
+        def server = Artifactory.server art1
 
         // Create a local build-info instance:
-        buildInfo = Artifactory.newBuildInfo()
-        
-        // Login the new conan remote server
-        def command = "user -r ${serverName} -p ${user_apikey} ${user_name}"
-        client.run(command: command.toString())
-    }
+        def buildInfo = Artifactory.newBuildInfo()
+        buildInfo.name = "conan-example-pipeline"
 
-    stage("Get dependencies from Artifactory repository"){
-        sh "mkdir -p build"
-        dir ('build') {
-            // Download dependencies, build if only source code there
-            def command = "install .. -r ${serverName}"
-            client.run(command: command.toString(), buildInfo: buildInfo)
-        }
-    }
+        // Create a conan client instance:
+        def conanClient = Artifactory.newConanClient()
 
-    stage("Get settings"){
-        dir ('build') {
-            settings = "build.name=${buildInfo.name};build.number=${buildInfo.number}"
-            def add_props = 0
-            def file = readFile "conaninfo.txt"
-            def lines = file.split('\n')
-            for ( line in lines) {
-                if ( add_props == 0 ) {
-                    if ( line.contains("[full_settings]") ) {
-                        add_props = 1
-                    }
-                } 
-                else {
-                    if ( add_props == 1 ) {
-                        print line
-                        if ( line.contains("=") ) {
-                            settings = settings.concat(";").concat(line.trim())
-                        }
-                        else {
-                            add_props = 0    
-                        }
-                    }
-                }
-            }
-        }
-    }
+        // Add a new repository named 'conan-local' to the conan client.
+        // The 'remote.add' method returns a 'serverName' string, which is used later in the script:
+        String serverName = conanClient.remote.add server: server, repo: "conan-virtual"
 
-    stage("Build binary app"){
-        dir ('build') {
-            // Build with g++
-            sh "g++ ../*.cpp @conanbuildinfo.args -o timer"
-        }
-    }
-    
-    stage("Upload binary app"){
-        dir ('build') {
-            // Upload binary app with settings to artifactory
-            tartgetRepo = "${dev_repo}/poco-timer/${buildInfo.number}/timer-${buildInfo.number}"
-            def uploadSpec = """{
-                "files": [
-                    {
-                        "pattern": "./timer",
-                        "target": "${tartgetRepo}",
-                        "props": "${settings}"
-                    }
-                ]
-            }""" 
+        // Run a conan build. The 'buildInfo' instance is passed as an argument to the 'run' method:
+        conanClient.run(command: "install . --build missing", buildInfo: buildInfo)
 
-            def buildInfo1 = server.upload(uploadSpec)
-            buildInfo.append buildInfo1
-            server.publishBuildInfo buildInfo
-        }
-    }
+        // Create an upload command. The 'serverName' string is used as a conan 'remote', so that
+        // the artifacts are uploaded into it:
+        String command = "upload * --all -r ${serverName} --confirm"
 
-    stage("Test"){
-        dir ('build') {
-            sh "./timer"
-            echo "Test Completed!"
-            test = true
-        }
-    }
+        // Run the upload command, with the same build-info instance as an argument:
+        conanClient.run(command: command, buildInfo: buildInfo)
 
-    stage('Bind Test Metadata') {
-        //Add test results
-        if (test) {
-            sleep 3
-            sh "curl -X PUT http://192.168.230.155:8081/artifactory/api/storage/${dev_repo}/poco-timer/${buildInfo.number}/timer-${buildInfo.number}?properties=test=done -u${user_name}:${user_apikey}"
-        } else {
-            echo 'Test NOT finished yet, stop here.'
-            sh "curl -X PUT http://192.168.230.155:8081/artifactory/api/storage/${dev_repo}/poco-timer/${buildInfo.number}/timer-${buildInfo.number}?properties=test=failed -u${user_name}:${user_apikey}"    
-            error("Pipeline failed because of test failed")
-        }
-    }
-    
-    stage('Promote') {
-        def promotionConfig = [
-            // Mandatory parameters
-            'buildName'          : buildInfo.name,
-            'buildNumber'        : buildInfo.number,
-            'targetRepo'         : release_repo,
- 
-            // Optional parameters
-            'comment'            : 'this is the promotion comment',
-            'sourceRepo'         : dev_repo,
-            'status'             : 'Released',
-            'includeDependencies': false,
-            'copy'               : true,
-            // 'failFast' is true by default.
-            // Set it to false, if you don't want the promotion to abort upon receiving the first error.
-            'failFast'           : true
-        ]
- 
-        // Promote build
-        server.promote promotionConfig
-    }
-
-    stage('Deploy') {
-        sh "mkdir -p deploy"
-        dir ('deploy') {
-            //Download App
-            def downloadSpec = """ {
-                "files": [
-                    {
-                        "aql": {
-                            "items.find": {
-                                "repo": "${release_repo}",
-                                "name": {"\$match": "timer-${buildInfo.number}"},
-                                "@test":{"\$eq":"done"},
-                                "@arch":{"\$eq":"x86_64"},
-                                "@os":{"\$eq":"Linux"},
-                                "@compiler":{"\$eq":"gcc"}
-                            }
-                        },
-                        "flat": "true"
-                    } 
-                ]
-            } """
-        
-            server.download(downloadSpec)
-            sleep 3
-            //sh "chmod +x timer-${buildInfo.number}"
-            //sh "./timer-${buildInfo.number}"
-            echo "Deploy Completed!"
-            deploy = true
-        }
-    }
-
-    stage('Bind Deploy Metadata') {
-        //Add test results
-        if (deploy) {
-            sleep 3
-            sh "curl -X PUT http://192.168.230.155:8081/artifactory/api/storage/${release_repo}/poco-timer/${buildInfo.number}/timer-${buildInfo.number}?properties=deploy=done -u${user_name}:${user_apikey}"
-        } else {
-            echo 'Deploy NOT finished yet, stop here.'
-            sh "curl -X PUT http://192.168.230.155:8081/artifactory/api/storage/${release_repo}/poco-timer/${buildInfo.number}/timer-${buildInfo.number}?properties=deploy=failed -u${user_name}:${user_apikey}"
-            error("Pipeline failed because of deploy failed")
-        }
-    }
-
-    stage("Cleanup"){
-        sh "rm -rf build"
-        sh "rm -rf build@tmp"
-        sh "rm -rf deploy"
-        sh "rm -rf deploy@tmp"
-    }
-
+         // Publish the build-info to Artifactory:
+        server.publishBuildInfo buildInfo
 }
