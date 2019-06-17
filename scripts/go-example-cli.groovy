@@ -14,25 +14,25 @@ node {
     }
     
     stage('Build') {
-        dir('project-examples/golang-example') {
+        dir('project-examples/golang-example/hello') {
           sh "jfrog rt go build go-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
     
     stage('Publish packages') {
-        dir('project-examples/golang-example') {
+        dir('project-examples/golang-example/hello') {
           sh "jfrog rt gp go-virtual v1.0.0 --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
     
     stage('Collect environment variables') {
-        dir('project-examples/golang-example') {
+        dir('project-examples/golang-example/hello') {
           sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
     
     stage('Publish the build info') {
-        dir('project-examples/golang-example') {
+        dir('project-examples/golang-example/hello') {
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
