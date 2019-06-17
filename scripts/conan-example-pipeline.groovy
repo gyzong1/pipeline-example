@@ -2,7 +2,7 @@
 def artifactory_server = 'art1'
 
 // Conan repository in Artifactory server
-def artifactory_repo = 'conan-virtual-local'
+def artifactory_repo = 'conan-virtual'
 
 // Binary dev repository in Artifactory server
 def dev_repo = 'conan-dev-local'
