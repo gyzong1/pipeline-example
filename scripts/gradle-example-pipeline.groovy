@@ -1,5 +1,5 @@
 node {
-    def server = Artifactory.newServer url: SERVER_URL, credentialsId: CREDENTIALS
+    def server = Artifactory.server 'art1'
     def rtGradle = Artifactory.newGradleBuild()
     def buildInfo
 
@@ -8,9 +8,9 @@ node {
     }
 
     stage ('Artifactory configuration') {
-        rtGradle.tool = GRADLE_TOOL // Tool name from Jenkins configuration
-        rtGradle.deployer repo: 'libs-release-local', server: server
-        rtGradle.resolver repo: 'jcenter', server: server
+        rtGradle.tool = gradle // Tool name from Jenkins configuration
+        rtGradle.deployer repo: 'gradle-virtual', server: server
+        rtGradle.resolver repo: 'gradle-virtual', server: server
     }
 
     stage ('Exec Gradle') {
