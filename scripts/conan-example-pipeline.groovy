@@ -1,5 +1,5 @@
  node {
-        sh "conan config set revisions_enabled=1"
+        sh "conan config set general.revisions_enabled=1"
         // Clone the code from github:
         git url :'https://github.com/memsharded/example-poco-timer.git'
 
