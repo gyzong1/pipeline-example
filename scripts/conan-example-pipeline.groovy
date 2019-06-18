@@ -1,5 +1,5 @@
  node {
-        export CONAN_REVISIONS_ENABLED=1
+        sh "export CONAN_REVISIONS_ENABLED=1"
         // Clone the code from github:
         git url :'https://github.com/memsharded/example-poco-timer.git'
 
