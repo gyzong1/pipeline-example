@@ -66,7 +66,7 @@ node {
                 buildInfo.env.capture = true
             }
             
-            
+            /*
             //Sonar 静态代码扫描
             stage('Sonar') {
                 // Sonar scan
@@ -114,6 +114,7 @@ node {
                     }
             //    }
             }
+*/
             stage('add jiraResult') {
                 def requirements = getRequirementsIds();
                 echo "requirements : ${requirements}"
