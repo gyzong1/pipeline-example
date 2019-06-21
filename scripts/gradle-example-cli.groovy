@@ -12,7 +12,7 @@ node {
         sh 'ls'
         git([url: 'https://github.com/gyzong1/pipeline-example.git', branch: 'master'])
     }
-    
+/*    
     stage('Build') {
         dir('project-examples/gradle-examples/gradle-example-ci-server') {
           sh "jfrog rt gradle 'clean artifactoryPublish' /tmp/test/gradle.conf --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
@@ -25,5 +25,5 @@ node {
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
-    
+ */   
 }
