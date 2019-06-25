@@ -21,7 +21,7 @@ node {
     
     stage('Publish packages') {
         dir('project-examples/python-example') {
-          sh "python setup.py sdist upload -r local/aa"
+          sh "python setup.py sdist upload -r local"
         }
     }
     
