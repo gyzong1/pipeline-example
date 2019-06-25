@@ -9,6 +9,7 @@ node {
 
     stage ('Artifactory configuration') {
         rtGradle.tool = 'gradle' // Tool name from Jenkins configuration
+        rtGradle.useWrapper = true
         rtGradle.deployer repo: 'gradle-virtual', server: server
         rtGradle.resolver repo: 'gradle-virtual', server: server
     }
