@@ -55,9 +55,9 @@ node {
             }
 
             stage('SCM') {
-                git url: GIT_URL, 
-                    branch: BRANCH, 
-                    changelog: true
+   //             git url: GIT_URL, 
+       //             branch: BRANCH, 
+        //            changelog: true
                  //   credentialsId: GIT_CREDENTIALS_ID
             }
 
