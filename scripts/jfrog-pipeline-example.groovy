@@ -138,6 +138,19 @@ node {
             stage('basic test') {
                 echo "add test step"
             }
+    
+def setPropsSpec = """{
+ "files": [
+  {
+       "pattern": "gyz-test4-local/aa/artifactroy.conf",
+       "props": "filter-by-this-prop=yes"
+    }
+ ]
+}"""
+ 
+ 
+artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
+    
 /*
                 stage("test") {
                 //解析测试报告
