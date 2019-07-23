@@ -46,10 +46,10 @@ node {
 
                 echo "环境准备"
                 rtMaven.resolver server: artiServer, 
-                                 releaseRepo: RESOLVE_RELEASE_REPO
+                                 releaseRepo: RESOLVE_RELEASE_REPO,
                                  snapshotRepo: RESOLVE_SNAPSHOT_REPO
                 rtMaven.deployer server: artiServer,
-                                 releaseRepo: DEPLOY_RELEASE_REPO 
+                                 releaseRepo: DEPLOY_RELEASE_REPO,
                                  snapshotRepo: DEPLOY_SNAPSHOT_REPO
                 rtMaven.tool = 'maven'
             }
