@@ -137,7 +137,7 @@ node {
             //进行测试
             stage('basic test') {
                 echo "add test step"
-                
+  /*              
                 def setPropsSpec = """{
  "files": [
   {
@@ -148,6 +148,7 @@ node {
  
  
 artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
+*/
             }
     
 
