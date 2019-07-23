@@ -141,7 +141,7 @@ node {
                 def setPropsSpec = """{
  "files": [
   {
-       "pattern": "gyz-test4-local/aa/artifactory.conf",
+       "pattern": "gyz-test4-local/aa/artifactory.conf"
     }
  ]
 }"""
