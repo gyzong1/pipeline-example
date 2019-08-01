@@ -153,44 +153,48 @@ artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
     
 
     
-/*
-                stage("test") {
-                //解析测试报告
-                // def reportUrl = "/root/.jenkins/workspace/" +buildInfo.name+ "/builds/" +buildInfo.number+ "/performance-reports/JUnit/TEST-artifactory.test.AppTest.xml";
-                def reportUrl = "/root/.jenkins/workspace/" +buildInfo.name+ "/maven-example/multi1/target/surefire-reports/TEST-artifactory.test.AppTest.xml";
+            stage("JUnit test") {
+            //解析测试报告
+            // def reportUrl = "/root/.jenkins/workspace/" +buildInfo.name+ "/builds/" +buildInfo.number+ "/performance-reports/JUnit/TEST-artifactory.test.AppTest.xml";
+            def reportUrl = "/root/.jenkins/workspace/" +buildInfo.name+ "/project-examples/maven-example/multi3/target/surefire-reports/TEST-artifactory.test.AppTest.xml";
+            echo "${reportUrl}"
+            sh "cat ${reportUrl}"
 
-                def testSuite = new XmlParser().parse(reportUrl);
+            def testSuite = new XmlParser().parse(reportUrl);
+            def totalCases = Integer.parseInt( testSuite.attribute("tests"));
+            def failures = Integer.parseInt( testSuite.attribute("failures")); 
+            def errors = Integer.parseInt( testSuite.attribute("errors")); 
+            def skipped = Integer.parseInt( testSuite.attribute("skipped")); 
 
-                def totalCases = Integer.parseInt( testSuite.attribute("tests"));
-                def failures = Integer.parseInt( testSuite.attribute("failures")); 
-                def errors = Integer.parseInt( testSuite.attribute("errors")); 
-                def skipped = Integer.parseInt( testSuite.attribute("skipped")); 
+            echo "=================== testSuite ======================"
+            echo "${testSuite}"
 
-                //计算测试结果
-                //def passRate = (totalCases - failures - errors - skipped) / totalCases;
-                def passRate = 90;
-                echo "passRate:${passRate}";
-                echo "totalCases:${totalCases}";
-                //添加元数据
-                def pom = readMavenPom file: 'maven-example/multi3/pom.xml'
+            echo "${totalCases}====${failures}====${errors}====${skipped}"
 
-                def latestVersionUrl = "${ARTIFACTORY_URL}api/search/latestVersion?g=${pom.parent.groupId.replace(".","/")}&a=${pom.artifactId}&v=${pom.parent.version}&repos=${PROMOTION_TARGET_REPO}"
+            //计算测试结果
+            def passRate = (totalCases - failures - errors - skipped) / totalCases;
+            echo "=================== testResult ======================"
+            echo "passRate:${passRate}";
+            echo "totalCases:${totalCases}";
 
-                def latestVersionUrlResponse = httpRequest consoleLogResponseBody: true, 
-                                                           customHeaders: [[name: 'X-JFrog-Art-Api',
-                                                           value: ARTIFACTORY_API_KEY]], 
-                                                           ignoreSslErrors: true, 
-                                                           url: latestVersionUrl
+            //添加元数据
+            def pom = readMavenPom file: 'project-examples/maven-example/multi3/pom.xml'
+            def latestVersionUrl = "${ARTIFACTORY_URL}api/search/latestVersion?g=${pom.parent.groupId.replace(".","/")}&a=${pom.artifactId}&v=${pom.parent.version}&repos=${PROMOTION_SOURCE_REPO}"
+            def latestVersionUrlResponse = httpRequest consoleLogResponseBody: true, 
+                                                       customHeaders: [[name: 'X-JFrog-Art-Api',
+                                                       value: ARTIFACTORY_API_KEY]], 
+                                                       ignoreSslErrors: true, 
+                                                       url: latestVersionUrl
+            def warLatestVersion = latestVersionUrlResponse.content
+            echo "warLatestVersion:${warLatestVersion}"
+            httpRequest httpMode: 'PUT', 
+                        consoleLogResponseBody: true, 
+                        customHeaders: [[name: 'X-JFrog-Art-Api', value: ARTIFACTORY_API_KEY]],
+                        url: "${ARTIFACTORY_URL}api/storage/${PROMOTION_SOURCE_REPO}/${pom.parent.groupId.replace(".","/")}/${pom.artifactId}/${pom.parent.version}/${pom.artifactId}-${warLatestVersion}.war?properties=passRate=${passRate};totalCases=${totalCases}"
 
-                def warLatestVersion = latestVersionUrlResponse.content
-                httpRequest httpMode: 'PUT', 
-                            consoleLogResponseBody: true, 
-                            customHeaders: [[name: 'X-JFrog-Art-Api', value: ARTIFACTORY_API_KEY]],
-                            url: "${ARTIFACTORY_URL}api/storage/${PROMOTION_TARGET_REPO}/${pom.parent.groupId.replace(".","/")}/${pom.artifactId}/${pom.parent.version}/${pom.artifactId}-${warLatestVersion}.war?properties=passRate=passRate"
-                
-                
-                }
-*/
+
+            }
+    
             /*
             stage('xray scan') {
                 def xrayConfig = [
