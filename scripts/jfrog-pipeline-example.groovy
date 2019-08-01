@@ -134,6 +134,7 @@ node {
                 rtMaven.deployer.deployArtifacts buildInfo
                 artiServer.publishBuildInfo buildInfo
             }
+    
             //进行测试
             stage('basic test') {
                 echo "add test step"
