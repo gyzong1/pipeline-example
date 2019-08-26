@@ -27,6 +27,9 @@ node {
         //git([url: 'git@gitlab.com:fuhui/helm-demo.git', branch: 'master'])
 	
     }
+	
+    dir("helm-demo-master") {
+	    
     stage('Build') {
         // Maven build here
         rtMaven.run pom: 'pom.xml', goals: 'clean test install', buildInfo: buildInfo
@@ -61,5 +64,6 @@ node {
         // Deploy to kubernetes via helm client
         sh 'helm repo update'
         sh 'helm install helm-virtual/jfrog-cloud-chart --name jfrog-helm-demo'
+    }
     }
 }
