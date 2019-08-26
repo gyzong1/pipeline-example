@@ -6,11 +6,11 @@ node {
     def tagName
     stage('Prepare') {
         // Prepare for object initilization
-        artiServer = Artifactory.server('artifactory-demo')
+        artiServer = Artifactory.server('art1')
         buildInfo = Artifactory.newBuildInfo()
         buildInfo.env.capture = true
         rtMaven = Artifactory.newMavenBuild()
-        rtMaven.tool = "maven-demo"
+        rtMaven.tool = "maven"
         // Specific dependency resolve repo
         rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: artiServer
         // Specific target repo
@@ -27,17 +27,17 @@ node {
         //git([url: 'git@gitlab.com:fuhui/helm-demo.git', branch: 'master'])
 	
     }
-        stage('Build') {
+    stage('Build') {
         // Maven build here
         rtMaven.run pom: 'pom.xml', goals: 'clean test install', buildInfo: buildInfo
         artiServer.publishBuildInfo buildInfo
     }
     stage('Image') {
         // Build docker image
-        tagName = 'docker-local.artifactory.cloud.demo/jfrog-cloud-demo:latest'
+        tagName = 'ha.example.com/docker-virtual/jfrog-cloud-demo:latest'
         docker.build(tagName)
-        sh 'docker login docker-local.artifactory.cloud.demo -u admin -p AKCp5bBNQKvBy5UTBPsUw38REwMmP6fgnEyVjLt8fNnH4T192ybSrZP1eqT4kBA8YEfhPCCQW'
-        sh 'docker push docker-local.artifactory.cloud.demo/jfrog-cloud-demo:latest'
+        sh 'docker login ha.example.com -u admin -p AKCp5ccv3oMbQuovKWLzCdRW2RnZW9Qb4agjxVA931J9SsJwwkEuAe1yknQtMBegJvDq8RSr8'
+        sh 'docker push ha.example.com/docker-virtual/jfrog-cloud-demo:latest'
         // sh 'docker rmi docker-local.artifactory.cloud.demo/jfrog-cloud-demo:latest'
         // sh 'docker logout docker-local.artifactory.cloud.demo'
     }
@@ -54,7 +54,8 @@ node {
     }
     stage('Upload Chart'){
         // Upload Chart to artifactory helm repository
-        sh 'curl -u admin:AKCp5bBNQKvBy5UTBPsUw38REwMmP6fgnEyVjLt8fNnH4T192ybSrZP1eqT4kBA8YEfhPCCQW -X PUT "http://artifactory.cloud.demo:8081/artifactory/helm-local/jfrog-cloud-chart-0.1.0.tgz" -T jfrog-cloud-chart-0.1.0.tgz'
+	// sh 'helm repo add helm-virtual http://ha.example.com/artifactory/helm-virtual --username admin --password AKCp5ccv3oMbQuovKWLzCdRW2RnZW9Qb4agjxVA931J9SsJwwkEuAe1yknQtMBegJvDq8RSr8'
+        sh 'curl -u admin:password -X PUT "http://ha.example.com/helm-virtual/jfrog-cloud-chart-0.1.0.tgz" -T jfrog-cloud-chart-0.1.0.tgz'
     }
     stage('Deploy Helm Chart'){
         // Deploy to kubernetes via helm client
