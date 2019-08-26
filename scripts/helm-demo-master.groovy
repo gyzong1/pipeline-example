@@ -25,6 +25,9 @@ node {
     stage('SCM') {
         // Checkout source code 上传helm-demo-master文件到自己的git仓库，拉取代码
         //git([url: 'git@gitlab.com:fuhui/helm-demo.git', branch: 'master'])
+	git url: 'https://github.com/gyzong1/pipeline-example.git', 
+            branch: 'master', 
+            changelog: true
 	
     }
 	
