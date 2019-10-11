@@ -19,11 +19,11 @@ node {
     }
 
 
-    stage ('Install npm') {
+    stage ('Npm install') {
         rtNpm.install buildInfo: buildInfo, path: 'project-examples/npm-example'
     }
 
-    stage ('Publish npm') {
+    stage ('Npm publish') {
         rtNpm.publish buildInfo: buildInfo, path: 'project-examples/npm-example'
     }
 
