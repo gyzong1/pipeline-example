@@ -21,10 +21,10 @@ node {
     
     stage('Publish packages') {
         dir('project-examples/golang-example/hello') {
-          sh "jfrog rt gp go-virtual v1.0.0 --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+          sh "jfrog rt gp go-virtual v1.0.0 --deps=ALL --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
-    
+
     stage('Collect environment variables') {
         dir('project-examples/golang-example/hello') {
           sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
