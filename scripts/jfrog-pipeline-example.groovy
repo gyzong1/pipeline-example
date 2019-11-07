@@ -223,6 +223,36 @@ artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
                 ]
                 artiServer.promote promotionConfig
             }
+    
+            //进行部署
+            stage('deploy') {
+                def pom = readMavenPom file: 'project-examples/maven-example/multi3/pom.xml'
+                def latestVersionUrl = "${ARTIFACTORY_URL}api/search/latestVersion?g=${pom.parent.groupId.replace(".","/")}&a=${pom.artifactId}&v=${pom.parent.version}&repos=${PROMOTION_TARGET_REPO}"
+                def latestVersionUrlResponse = httpRequest consoleLogResponseBody: true, 
+                                                           customHeaders: [[name: 'X-JFrog-Art-Api',
+                                                           value: ARTIFACTORY_API_KEY]], 
+                                                           ignoreSslErrors: true, 
+                                                           url: latestVersionUrl
+                def warLatestVersion = latestVersionUrlResponse.content
+                def deployCmd = "ansible 127.0.0.1 -m get_url -a 'url=${ARTIFACTORY_URL}${PROMOTION_TARGET_REPO}/${pom.parent.groupId.replace(".","/")}/${pom.artifactId}/${pom.parent.version}/${pom.artifactId}-${warLatestVersion}.war  dest=/tmp/apache-tomcat-8.5.37/webapps/demo.war force=true url_username=admin url_password=${ARTIFACTORY_API_KEY}'"
+                //sh "ansible 10.1.1.1 -m shell -a '/tomcat/startup.sh' "
+                echo deployCmd
+                process = [ 'bash', '-c', deployCmd].execute().text
+                
+                commandText = "curl  -X PUT \"${ARTIFACTORY_URL}api/storage/${PROMOTION_TARGET_REPO}/${pom.parent.groupId.replace(".","/")}/${pom.artifactId}/${pom.parent.version}/${pom.artifactId}-${warLatestVersion}.war?properties=deploy.tool=ansible;deploy.env=127.0.0.1\" -uadmin:${ARTIFACTORY_API_KEY}";
+                echo commandText
+                [ 'bash', '-c', commandText].execute().text
+                
+                def stopCmd = "ansible 127.0.0.1 -m shell -a '/tmp/apache-tomcat-8.5.37/bin/shutdown.sh'"
+                echo stopCmd
+                sleep 5
+                [ 'bash', '-c', stopCmd].execute().text
+                def startCmd = "ansible 127.0.0.1 -m shell -a '/tmp/apache-tomcat-8.5.37/bin/startup.sh'"
+                echo startCmd
+                [ 'bash', '-c', startCmd].execute().text
+                
+            }
+    
             //进行部署
             /*
             stage('deploy') {
