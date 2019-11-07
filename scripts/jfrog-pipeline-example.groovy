@@ -225,6 +225,7 @@ artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
             }
     
             //进行部署
+            /*
             stage('deploy') {
                 def pom = readMavenPom file: 'project-examples/maven-example/multi3/pom.xml'
                 def latestVersionUrl = "${ARTIFACTORY_URL}api/search/latestVersion?g=${pom.parent.groupId.replace(".","/")}&a=${pom.artifactId}&v=${pom.parent.version}&repos=${PROMOTION_TARGET_REPO}"
@@ -252,6 +253,7 @@ artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
                 [ 'bash', '-c', startCmd].execute().text
                 
             }
+            */
     
             //进行部署
             /*
