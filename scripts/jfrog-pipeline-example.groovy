@@ -224,7 +224,7 @@ artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
                 artiServer.promote promotionConfig
             }
     
-            //进行部署
+            //进行部署(ansible)
             /*
             stage('deploy') {
                 def pom = readMavenPom file: 'project-examples/maven-example/multi3/pom.xml'
