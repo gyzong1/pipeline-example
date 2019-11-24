@@ -50,6 +50,9 @@ node {
     stage ('Env capture') {
         // 搜集环境变量
         buildInfo.env.capture = true
+        // 包含或排除
+        // buildInfo.env.filter.addInclude("*a*")
+        // buildInfo.env.filter.addExclude("DONT_COLLECT*")
     }
     stage ('Exec Maven') {
         rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
