@@ -3,7 +3,7 @@ node {
   def artServer = Artifactory.server 'art1'
   def rtMaven = Artifactory.newMavenBuild()
   def buildInfo = Artifactory.newBuildInfo()
-  
+ /* 
   stage 'Clone'
         git url: 'https://github.com/gyzong1/spring-boot-samples.git', branch: 'master'
 
@@ -15,12 +15,28 @@ node {
       rtMaven.tool = 'maven'
       rtMaven.deployer.deployArtifacts = true
      // rtMaven.deployer.artifactDeploymentPatterns.addInclude("frog*")
-      rtMaven.deployer.artifactDeploymentPatterns.addInclude("*.zip")
-      rtMaven.run pom: 'pom.xml', goals: 'clean package', buildInfo: buildInfo
-      
-      
+      rtMaven.run pom: 'pom.xml', goals: 'clean package', buildInfo: buildInfo   
 
       artServer.publishBuildInfo buildInfo
+    }
+   */
+  
+  stage ('Clone') {
+        git url: 'https://github.com/JFrog/project-examples.git'
+    }
+
+    stage ('Artifactory configuration') {
+        rtMaven.tool = 'maven' // Tool name from Jenkins configuration
+        rtMaven.deployer releaseRepo: 'maven-virtual', snapshotRepo: 'maven-virtual', server: artServer
+        rtMaven.resolver releaseRepo: 'maven-dev-local', snapshotRepo: 'maven-dev-local', server: artServer
+    }
+
+    stage ('Exec Maven') {
+        rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
+    }
+
+    stage ('Publish build info') {
+        server.publishBuildInfo buildInfo
     }
 
 }
