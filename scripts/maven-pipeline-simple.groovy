@@ -54,6 +54,24 @@ node {
         // buildInfo.env.filter.addInclude("*a*")
         // buildInfo.env.filter.addExclude("DONT_COLLECT*")
     }
+  
+    stage ('Jira issues') {
+        config = """{
+          "version": 1,
+          "issues": {
+            "trackerName": "JIRA",
+            "regexp": "(.+-[0-9]+)\\s-\\s(.+)",
+            "keyGroupIndex": 1,
+            "summaryGroupIndex": 2,
+            "trackerUrl": "http://my-jira.com/issues",
+            "aggregate": "true",
+            "aggregationStatus": "RELEASED"
+          }
+        }"""
+ 
+        buildInfo.issues.collect(server, config)
+    }
+  
     stage ('Exec Maven') {
         rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
