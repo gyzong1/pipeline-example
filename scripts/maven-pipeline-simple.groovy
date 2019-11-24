@@ -15,7 +15,7 @@ node {
       rtMaven.tool = 'maven'
       rtMaven.deployer.deployArtifacts = true
      // rtMaven.deployer.artifactDeploymentPatterns.addInclude("frog*")
-      rtMaven.deployer.artifactDeploymentPatterns.addInclude("../readme*")
+      rtMaven.deployer.artifactDeploymentPatterns.addInclude("/root/.jenkins/workspace/maven-pipeline-simple/spring-boot-basewebapp/readme*")
       rtMaven.run pom: 'pom.xml', goals: 'clean package', buildInfo: buildInfo
       
       
