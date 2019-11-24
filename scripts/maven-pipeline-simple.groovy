@@ -23,6 +23,21 @@ node {
   
   stage ('Clone') {
         git url: 'https://github.com/JFrog/project-examples.git'
+    
+         issuesCollectionConfig = """{
+            "version": 1,
+            "issues": {
+                "trackerName": "JIRA",
+                "regexp": "(.+-[0-9]+)\\s-\\s(.+)",
+                "keyGroupIndex": 1,
+                "summaryGroupIndex": 2,
+                "trackerUrl": "http://my-jira.com/issues",
+                "aggregate": "true",
+                "aggregationStatus": "RELEASED"
+            }
+        }"""
+
+        buildInfo.issues.collect(artServer, issuesCollectionConfig)
     }
 
     stage ('Artifactory configuration') {
@@ -55,6 +70,7 @@ node {
         // buildInfo.env.filter.addExclude("DONT_COLLECT*")
     }
   
+  /*
     stage ('Jira issues') {
         issuesCollectionConfig = """{
             "version": 1,
@@ -71,6 +87,7 @@ node {
 
         buildInfo.issues.collect(artServer, issuesCollectionConfig)
     }
+  */
   
     stage ('Exec Maven') {
         rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
