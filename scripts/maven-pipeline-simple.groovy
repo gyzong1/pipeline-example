@@ -53,10 +53,11 @@ node {
             def md5 = buildInfo.getDependencies()[0].getMd5()
             def sha1 = buildInfo.getDependencies()[0].getSha1()
           
-            echo "$localPath"
-            echo "$remotePath"
-            echo "$md5"
-            echo "sha1"
+            echo "========================"
+            echo $localPath
+            echo $remotePath
+            echo $md5
+            echo sha1
         }
       
     }
