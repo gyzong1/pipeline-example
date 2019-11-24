@@ -47,6 +47,10 @@ node {
         // rtMaven.deployer.deployArtifacts buildInfo   
     }
 
+    stage ('Env capture') {
+        // 搜集环境变量
+        buildInfo.env.capture = true
+    }
     stage ('Exec Maven') {
         rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
