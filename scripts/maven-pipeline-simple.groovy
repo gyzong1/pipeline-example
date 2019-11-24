@@ -44,30 +44,11 @@ node {
         // 禁用部署工件
         // rtMaven.deployer.deployArtifacts = false
         // 稍后发布工件
-        // rtMaven.deployer.deployArtifacts buildInfo
-      
-        
-
-      
+        // rtMaven.deployer.deployArtifacts buildInfo   
     }
 
     stage ('Exec Maven') {
         rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
-    }
-
-    stage ('Get dependance') {
-        if (buildInfo.getDependencies().size() > 0) {
-        def localPath = buildInfo.getDependencies()[0].getLocalPath()
-        def remotePath = buildInfo.getDependencies()[0].getRemotePath()
-        def md5 = buildInfo.getDependencies()[0].getMd5()
-        def sha1 = buildInfo.getDependencies()[0].getSha1()
-          
-        echo "========================"
-        echo "$localPath"
-        echo "$remotePath"
-        echo "$md5"
-        echo "sha1"
-        }
     }
   
     stage ('Publish build info') {
