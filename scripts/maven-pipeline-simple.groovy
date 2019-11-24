@@ -29,6 +29,7 @@ node {
         rtMaven.tool = 'maven' // Tool name from Jenkins configuration
         rtMaven.resolver releaseRepo: 'maven-virtual', snapshotRepo: 'maven-virtual', server: artServer
         rtMaven.deployer releaseRepo: 'maven-test-local', snapshotRepo: 'maven-test-local', server: artServer
+        rtMaven.deployer.artifactDeploymentPatterns.addInclude("multi3/target/*.jar")
     }
 
     stage ('Exec Maven') {
