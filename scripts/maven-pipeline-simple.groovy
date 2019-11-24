@@ -29,7 +29,11 @@ node {
         rtMaven.tool = 'maven' // Tool name from Jenkins configuration
         rtMaven.resolver releaseRepo: 'maven-virtual', snapshotRepo: 'maven-virtual', server: artServer
         rtMaven.deployer releaseRepo: 'maven-test-local', snapshotRepo: 'maven-test-local', server: artServer
+        // 只包含某部分包
         // rtMaven.deployer.artifactDeploymentPatterns.addInclude("*multi3*")
+        // 添加属性
+        rtMaven.deployer.addProperty("status", "in-qa").addProperty("compatibility", "1", "2", "3")
+      
     }
 
     stage ('Exec Maven') {
