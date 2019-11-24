@@ -1,6 +1,6 @@
 node {
 
-  def server = Artifactory.server 'art1'
+  def artServer = Artifactory.server 'art1'
   def rtMaven = Artifactory.newMavenBuild()
   def buildInfo = Artifactory.newBuildInfo()
  /* 
@@ -27,8 +27,8 @@ node {
 
     stage ('Artifactory configuration') {
         rtMaven.tool = 'maven' // Tool name from Jenkins configuration
-        rtMaven.deployer releaseRepo: 'maven-virtual', snapshotRepo: 'maven-virtual', server: server
-        rtMaven.resolver releaseRepo: 'maven-test-local', snapshotRepo: 'maven-test-local', server: server
+        rtMaven.deployer releaseRepo: 'maven-virtual', snapshotRepo: 'maven-virtual', server: artServer
+        rtMaven.resolver releaseRepo: 'maven-test-local', snapshotRepo: 'maven-test-local', server: artServer
     }
 
     stage ('Exec Maven') {
@@ -36,7 +36,7 @@ node {
     }
 
     stage ('Publish build info') {
-        server.publishBuildInfo buildInfo
+        artServer.publishBuildInfo buildInfo
     }
 
 }
