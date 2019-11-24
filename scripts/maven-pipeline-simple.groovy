@@ -33,6 +33,8 @@ node {
         // rtMaven.deployer.artifactDeploymentPatterns.addInclude("*multi3*")
         // 添加属性
         rtMaven.deployer.addProperty("status", "in-qa").addProperty("compatibility", "1", "2", "3")
+        // 禁用部署工件
+        rtMaven.deployer.deployArtifacts = false
       
     }
 
