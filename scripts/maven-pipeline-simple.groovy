@@ -23,21 +23,6 @@ node {
   
   stage ('Clone') {
         git url: 'https://github.com/JFrog/project-examples.git'
-    
-         issuesCollectionConfig = """{
-            "version": 1,
-            "issues": {
-                "trackerName": "JIRA",
-                "regexp": "(.+-[0-9]+)\\s-\\s(.+)",
-                "keyGroupIndex": 1,
-                "summaryGroupIndex": 2,
-                "trackerUrl": "http://my-jira.com/issues",
-                "aggregate": "true",
-                "aggregationStatus": "RELEASED"
-            }
-        }"""
-
-        buildInfo.issues.collect(artServer, issuesCollectionConfig)
     }
 
     stage ('Artifactory configuration') {
