@@ -30,6 +30,7 @@ node {
         rtMaven.resolver releaseRepo: 'maven-virtual', snapshotRepo: 'maven-virtual', server: artServer
         rtMaven.deployer releaseRepo: 'maven-test-local', snapshotRepo: 'maven-test-local', server: artServer
         rtMaven.deployer.artifactDeploymentPatterns.addInclude("multi3*")
+        rtMaven.deployer.deployArtifacts = true
     }
 
     stage ('Exec Maven') {
