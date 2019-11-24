@@ -15,6 +15,7 @@ node {
       rtMaven.tool = 'maven'
       rtMaven.deployer.deployArtifacts = true
      // rtMaven.deployer.artifactDeploymentPatterns.addInclude("frog*")
+      rtMaven.deployer.artifactDeploymentPatterns.addInclude("../readme*")
       rtMaven.run pom: 'pom.xml', goals: 'clean package', buildInfo: buildInfo
       
       
