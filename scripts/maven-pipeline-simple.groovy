@@ -56,20 +56,20 @@ node {
     }
   
     stage ('Jira issues') {
-        config = """{
-          "version": 1,
-          "issues": {
-            "trackerName": "JIRA",
-            "regexp": "(.+-[0-9]+)\\s-\\s(.+)",
-            "keyGroupIndex": 1,
-            "summaryGroupIndex": 2,
-            "trackerUrl": "http://my-jira.com/issues",
-            "aggregate": "true",
-            "aggregationStatus": "RELEASED"
-          }
+        issuesCollectionConfig = """{
+            "version": 1,
+            "issues": {
+                "trackerName": "JIRA",
+                "regexp": "(.+-[0-9]+)\\s-\\s(.+)",
+                "keyGroupIndex": 1,
+                "summaryGroupIndex": 2,
+                "trackerUrl": "http://my-jira.com/issues",
+                "aggregate": "true",
+                "aggregationStatus": "RELEASED"
+            }
         }"""
- 
-        buildInfo.issues.collect(artServer, config)
+
+        buildInfo.issues.collect(artServer, issuesCollectionConfig)
     }
   
     stage ('Exec Maven') {
