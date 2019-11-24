@@ -69,7 +69,7 @@ node {
           }
         }"""
  
-        buildInfo.issues.collect(server, config)
+        buildInfo.issues.collect(artServer, config)
     }
   
     stage ('Exec Maven') {
