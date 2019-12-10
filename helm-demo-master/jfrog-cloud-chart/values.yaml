@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository:  ha.example.com/docker-virtual/jfrog-cloud-demo
+  repository:  192.168.100.8:8082/docker-virtual/jfrog-cloud-demo
   tag: latest
   pullPolicy: IfNotPresent
 service:
