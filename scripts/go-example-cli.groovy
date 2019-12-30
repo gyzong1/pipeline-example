@@ -15,7 +15,8 @@ node {
     
     stage('Build') {
         dir('project-examples/golang-example/hello') {
-          sh "jfrog rt go build go-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+          //sh "jfrog rt go build go-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+            sh "jfrog rt go build --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
     
