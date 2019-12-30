@@ -1,0 +1,8 @@
+version: 1
+type: go
+resolver:
+  repo: go-virtual
+  serverId: art1
+deployer:
+  repo: go-virtual
+  serverId: art1
