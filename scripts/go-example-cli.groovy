@@ -11,7 +11,7 @@ node {
     stage('SCM') {
         // cleanWs()
         sh 'ls'
-        git([url: 'https://github.com/gyzong1/pipeline-example.git', branch: 'master'])
+        //git([url: 'https://github.com/gyzong1/pipeline-example.git', branch: 'master'])
     }
     
     stage('Build') {
