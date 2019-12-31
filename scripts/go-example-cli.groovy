@@ -16,8 +16,8 @@ node {
     
     stage('Build') {
         dir('project-examples/golang-example/hello') {
-           sh "jfrog rt go build go-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
-          // sh "jfrog rt go build --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+          // sh "jfrog rt go build go-virtual --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+           sh "jfrog rt go build --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
           // sh 'export GOPROXY="http://admin:AKCp5ccv3oMbQuovKWLzCdRW2RnZW9Qb4agjxVA931J9SsJwwkEuAe1yknQtMBegJvDq8RSr8@192.168.230.155:8081/artifactory/api/go/go-virtual"'
           // sh 'go build'
         }
