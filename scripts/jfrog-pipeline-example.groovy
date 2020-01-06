@@ -126,7 +126,7 @@ node {
             }
             
             
-            //maven 构建
+            //maven 构建 
             stage('mvn build') {
                 rtMaven.deployer.deployArtifacts = false
                 rtMaven.run pom: POM_PATH, goals: MAVEN_GOALS, buildInfo: buildInfo
