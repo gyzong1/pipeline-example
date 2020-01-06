@@ -122,7 +122,7 @@ node {
                 def revisionIds = getRevisionIds();
                 echo "revisionIds : ${revisionIds}"
                 rtMaven.deployer.addProperty("project.issues", requirements).addProperty("project.revisionIds", revisionIds)
-                rtMaven.deployer.addProperty("JiraUrl", "http://jira..com/browse/" + requirements)
+                rtMaven.deployer.addProperty("JiraUrl", "http://jira.example.com/browse/" + requirements)
             }
             
             
