@@ -1,6 +1,6 @@
 node {
 
-    //artifactory  
+    //artifactory   
     def artiServer = Artifactory.server 'art1'
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo = Artifactory.newBuildInfo()
