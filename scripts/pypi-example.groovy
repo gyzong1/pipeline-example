@@ -25,18 +25,6 @@ node {
           sh "jfrog rt u dist/ ${DEPLOYREPO} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
-    
-    stage('Collect environment variables') {
-        dir('project-examples/python-example') {
-          sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
-        }
-    }
-    
-    stage('Publish the build info') {
-        dir('project-examples/python-example') {
-          sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
-        }
-    }
 
     stage('Install published package') {
         dir('project-examples/python-example') {
@@ -50,4 +38,15 @@ node {
         }
     }
     
+    stage('Collect environment variables') {
+        dir('project-examples/python-example') {
+          sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
+    }
+    
+    stage('Publish the build info') {
+        dir('project-examples/python-example') {
+          sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
+    }
 }
