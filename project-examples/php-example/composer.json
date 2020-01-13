@@ -1,0 +1,14 @@
+{
+    "name": "root/test",
+    "description": "test",
+    "type": "library",
+    "authors": [
+        {
+            "name": "guoyunzong",
+            "email": "gyzong1@163.com"
+        }
+    ],
+    "require": {
+      "monolog/monolog": "1.0.*"
+    }
+}
