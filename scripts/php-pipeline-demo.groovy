@@ -8,7 +8,7 @@ node {
     
     stage('Build') {
         dir('project-examples/php-example') {
-          sh "php /usr/local/bin/composer init"
+          sh "composer install --prefer-dist"
         }
     }
     
