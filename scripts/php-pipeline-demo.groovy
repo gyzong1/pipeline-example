@@ -14,7 +14,7 @@ node {
     
     stage('Package') {
         dir('project-examples/php-example') {
-            sh "cd .. && tar -zcvf php-demo-${env.BUILD_NUMBER}.tar.gz ${env.JOB_NAME}"
+            sh "cd .. && tar -zcvf php-demo-${env.BUILD_NUMBER}.tar.gz php-example"
         }
     }
     
