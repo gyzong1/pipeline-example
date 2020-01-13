@@ -2,6 +2,7 @@ node {
     
     //env.NODE_HOME=tool name: 'go', type: 'go'
     //env.PATH="/usr/local/go/bin:${env.PATH}"
+    def DEPLOYREPO="pypi-virtual"
     
     stage('Prepare') {
         sh 'jfrog rt c art1 --url=http://192.168.230.155:8081/artifactory --user=admin --password=password'        // 此处使用域名不好使，具体原因待查
@@ -15,13 +16,13 @@ node {
     
     stage('Build') {
         dir('project-examples/python-example') {
-          sh "pip install -r requirements.txt"
+          sh "jfrog rt pipi -r requirements.txt --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} --module=jfrog-python-example"
         }
     }
     
     stage('Publish packages') {
         dir('project-examples/python-example') {
-          sh "python setup.py sdist upload -r local"
+          sh "jfrog rt u dist/ ${DEPLOYREPO} --build-name=my-pip-build --build-number=1 --module=jfrog-python-example"
         }
     }
     
@@ -36,5 +37,16 @@ node {
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
+
+    stage('Install published package') {
+        dir('project-examples/python-example') {
+          sh "jfrog rt pip-install jfrog-python-example"
+        }
+    }
     
+    stage('Validate package') {
+        dir('project-examples/python-example') {
+          sh "pip show jfrog-python-example"
+        }
+    }
 }
