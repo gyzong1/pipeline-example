@@ -22,7 +22,7 @@ node {
     
     stage('Publish packages') {
         dir('project-examples/python-example') {
-          sh "jfrog rt u dist/ ${DEPLOYREPO} --build-name=my-pip-build --build-number=1 --module=jfrog-python-example"
+          sh "jfrog rt u dist/ ${DEPLOYREPO} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} --module=jfrog-python-example"
         }
     }
     
