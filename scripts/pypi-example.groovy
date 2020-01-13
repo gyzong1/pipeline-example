@@ -38,4 +38,16 @@ node {
         }
     }
 
+    stage('Install published package') {
+        dir('project-examples/python-example') {
+          sh "jfrog rt pip-install jfrog-python-example"
+        }
+    }
+    
+    stage('Validate package') {
+        dir('project-examples/python-example') {
+          sh "pip show jfrog-python-example"
+        }
+    }
+    
 }
