@@ -1,8 +1,0 @@
-version: 1
-type: gradle
-resolver:
-  repo: gradle-virtual
-  serverId: art1
-deployer:
-  repo: gradle-virtual
-  serverId: art1
