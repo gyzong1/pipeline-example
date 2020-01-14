@@ -2,7 +2,7 @@ node {
         
         stage("scm"){
             // Clone the code from github:
-            git url :'https://github.com/memsharded/example-poco-timer.git'
+            git url :'https://github.com/gyzong1/example-poco-timer.git'
             //git url :'https://github.com/memsharded/hello-use'
             //git url : 'https://github.com/lasote/conan-goserver-example'
         }
