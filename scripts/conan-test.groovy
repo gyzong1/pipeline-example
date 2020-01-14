@@ -15,6 +15,6 @@ node {
         
         stage("build&push"){
             sh "conan install . -r test --build missing"
-            sh "conan upload * -r test --all"
+            // sh "conan upload * -r test --all"
         }     
 }
