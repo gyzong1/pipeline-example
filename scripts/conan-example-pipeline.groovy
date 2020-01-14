@@ -1,5 +1,5 @@
 node {
-        
+        env.CONAN_REVISIONS_ENABLED=1
         stage("scm"){
             // Clone the code from github:
             git url :'https://github.com/gyzong1/example-poco-timer.git'
