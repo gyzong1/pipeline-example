@@ -2,7 +2,7 @@ node {
         
         stage("scm"){
             // Clone the code from github:
-            git url :'https://github.com/memsharded/example-poco-timer.git'
+            git url :'https://github.com/gyzong1/example-poco-timer.git'
             //git url :'https://github.com/memsharded/hello-use'
             //git url : 'https://github.com/lasote/conan-goserver-example'
         }
@@ -19,7 +19,7 @@ node {
     
             // Add a new repository named 'conan-local' to the conan client.
             // The 'remote.add' method returns a 'serverName' string, which is used later in the script:
-            String serverName = conanClient.remote.add server: server, repo: "conan-local"
+            String serverName = conanClient.remote.add server: server, repo: "conan-virtual"
     
             // Run a conan build. The 'buildInfo' instance is passed as an argument to the 'run' method:
             conanClient.run(command: "install . --build missing", buildInfo: buildInfo)
