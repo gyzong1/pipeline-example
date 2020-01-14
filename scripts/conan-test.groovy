@@ -14,7 +14,7 @@ node {
         }  
         
         stage("build&push"){
-            sh "conan install . --build missing"
-            sh "conan upload * --all -r conan-local --confirm"
+            sh "conan install . -r --build missing"
+            sh "conan upload * --all -r test --confirm"
         }     
 }
