@@ -20,6 +20,12 @@ node {
         }
     }
     
+    stage('Package the project') {
+        dir('project-examples/python-example') {
+          sh "python setup.py sdist bdist_wheel"
+        }
+    }
+    
     stage('Publish packages') {
         dir('project-examples/python-example') {
           sh "jfrog rt u dist/ ${DEPLOYREPO} --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
