@@ -16,7 +16,8 @@ node {
     
     stage('Build') {
         dir('project-examples/python-example') {
-          sh "jfrog rt pipi -r requirements.txt --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+          //sh "jfrog rt pipi -r requirements.txt --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+          sh "jfrog rt pipi --force-reinstall -r requirements.txt --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
     
