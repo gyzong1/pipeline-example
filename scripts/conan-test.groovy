@@ -1,6 +1,7 @@
 node {
         
         stage("scm"){
+            cleanWs()
             // Clone the code from github:
             git url :'https://github.com/gyzong1/example-poco-timer.git'
             //git url :'https://github.com/memsharded/hello-use'
