@@ -1,7 +1,7 @@
 node {
     def server = Artifactory.server 'art1'
     def rtGradle = Artifactory.newGradleBuild()
-    def buildInfo = Artifactory.newBuildInfo()
+    def buildInfo
 
     stage ('Clone') {
         git url: 'https://github.com/JFrog/project-examples.git'
@@ -9,28 +9,16 @@ node {
 
     stage ('Artifactory configuration') {
         rtGradle.tool = 'gradle' // Tool name from Jenkins configuration
+        rtGradle.useWrapper = true
         rtGradle.deployer repo: 'guide-gradle-dev-local', server: server
         rtGradle.resolver repo: 'guide-gradle-virtual', server: server
     }
 
-    withEnv (['DONT_COLLECT=FOO']) {
-        stage ('Config Build Info') {
-            buildInfo.env.capture = true
-            buildInfo.env.filter.addInclude ("*")
-            buildInfo.env.filter.addExclude ("DONT_COLLECT*")
-        }
+    stage ('Exec Gradle') {
+        buildInfo = rtGradle.run rootDir: "gradle-examples/gradle-example-ci-server/", buildFile: 'build.gradle', tasks: 'clean install artifactoryPublish'
+    }
 
-        stage ('Extra gradle configurations') {
-            rtGradle.deployer.artifactDeploymentPatterns.addExclude ("*.war")
-            rtGradle.usesPlugin = true // Artifactory plugin already defined in build script
-        }
-
-        stage ('Exec Gradle') {
-            rtGradle.run rootDir: "gradle-examples/gradle-example/", buildFile: 'build.gradle', tasks: 'clean artifactoryPublish', buildInfo: buildInfo
-        }
-
-        stage ('Publish build info') {
-            server.publishBuildInfo buildInfo
-        }
+    stage ('Publish build info') {
+        server.publishBuildInfo buildInfo
     }
 }
