@@ -14,7 +14,7 @@ node {
     }
 
     stage ('Docker login') {
-        sh 'docker login -u admin -p password 192.168.230.155:8081'
+        sh 'docker login -u admin -p password 192.168.230.155'
     }
 
     stage ('Build docker image') {
@@ -26,7 +26,7 @@ node {
     }
 
     stage ('Pull image from Artifactory') {
-        sh 'docker pull 192.168.230.155:8081/guide-docker-virtual/busybox'
+        sh 'docker pull 192.168.230.155/guide-docker-virtual/busybox'
     }
 
     stage ('Publish build info') {
