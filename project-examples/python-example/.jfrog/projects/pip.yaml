@@ -1,0 +1,6 @@
+pip.yaml 
+version: 1
+type: pip
+resolver:
+  repo: guide-pypi-virtual
+  serverId: art1
