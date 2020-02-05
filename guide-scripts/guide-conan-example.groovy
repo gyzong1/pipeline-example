@@ -24,7 +24,7 @@ node {
         }  
         
         stage("resolve"){
-            sh "conan install . -r test --build missing"
+            sh "conan install . -r guide-conan-virtual --build missing"
         }   
 
         stage("upload"){
