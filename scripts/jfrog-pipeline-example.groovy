@@ -33,7 +33,7 @@ node {
     def SONAR_SOURCES = 'project-examples/maven-example/multi3/src'
 
     //docker
-    //def DOCKER_IMAGE_NAME = 'java-mvn-sonar-tomcat'
+    //def DOCKER_IMAGE_NAME = 'java-mvn-sonar-tomcat' 
     //def DOCKER_IMAGE_TAG = 'latest'
 
 
