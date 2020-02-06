@@ -106,7 +106,7 @@ node {
                             }
                  //       }
 
-                        //增加sonar扫描结果到artifactory
+                        //增加sonar扫描结果到artifactory 
                         rtMaven.deployer.addProperty("qulity.gate.sonarUrl", SONAR_HOST_URL + "/dashboard/index/" + SONAR_PROJECT_KEY)
 
                         
