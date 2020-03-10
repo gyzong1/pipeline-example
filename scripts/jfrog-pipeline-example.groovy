@@ -32,6 +32,24 @@ node {
     def SONAR_SCANNER_TOOL = 'sonar-scanner-3.3.0'
     def SONAR_PROJECT_KEY = "${JOB_NAME}"
     def SONAR_SOURCES = 'project-examples/maven-example/multi3/src'
+    
+// 定义质量关卡    
+file_contents = '''
+{
+  "files": [
+    {
+      "aql": {
+        "items.find": {
+         "repo": "maven-dev-local",
+         "@test" : {"$eq" : "ok"}
+        }
+      },
+
+      "target": "maven-stage-local/"
+    }
+  ]
+}
+'''    
 
     //docker
     //def DOCKER_IMAGE_NAME = 'java-mvn-sonar-tomcat' 
@@ -210,6 +228,18 @@ artiServer.setProps spec: setPropsSpec, props: "p1=v1;p2=v2"
             }
             */
             
+ 
+             // sync: 拷贝符合质量关卡的包到指定仓库
+             stage('sync') {
+					write_file_path = "./sync.spec"
+					writeFile file: write_file_path, text: file_contents, encoding: "UTF-8"
+					// read file and print it out
+					fileContents = readFile file: write_file_path, encoding: "UTF-8"
+					println fileContents
+                    
+                    sh 'jfrog rt cp --spec=sync.spec'
+            }  
+    
             //promotion操作，进行包的升级
             stage('promotion') {
                 def promotionConfig = [
