@@ -349,10 +349,12 @@ def getRequirementsIds() {
         while (logEntryIterator.hasNext()) {
             final logEntry = logEntryIterator.next()
             def patten = ~/#[\w\-_\d]+/;
+	    // def patten = ~/.*/; //匹配所有
             def matcher = (logEntry.getMsg() =~ patten);
             def count = matcher.getCount();
             for (int i = 0; i < count; i++) {
                 reqIds += matcher[i].replace('#', '') + ","
+		// reqIds += matcher[i]  //匹配所有
             }
         }
     }
