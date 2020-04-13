@@ -1,0 +1,24 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'Pods-PodTest_Tests' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for Pods-PodTest_Tests
+
+end
+
+target 'PodTest' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for PodTest
+
+end
+
+plugin 'cocoapods-art', :sources => [
+  'guide-cocoapods-dev-local'
+]
+
+pod 'ZCPKit'
