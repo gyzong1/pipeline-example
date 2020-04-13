@@ -1,0 +1,22 @@
+{
+  "name": "myapp",
+  "version": "0.1.0",
+  "summary": "A short description of myapp.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/gyzong1/myapp",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "gyzong1": "gyz@example.com"
+  },
+  "source": {
+    "git": "https://github.com/gyzong1/myapp.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "myapp/Classes/**/*"
+}
