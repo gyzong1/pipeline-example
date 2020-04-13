@@ -22,7 +22,7 @@ pod 'PodTest'
 
 ## Author
 
-gyzong1, gyz@example.com
+gyzong1, gyzong1@163.com
 
 ## License
 
