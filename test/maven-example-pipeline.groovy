@@ -1,23 +1,24 @@
 pipeline {
     agent any
+
     stages {
-        stage('build') {
+        stage('SCM') {
             steps {
-                    git 'https://gitee.com/gyzong1/project-examples.git'
+                git 'https://gitee.com/gyzong1/project-examples.git'
             }
         }
 
-        stage('build1') {
+        stage('build') {
             steps {
                 rtMavenResolver (
-                    id: 'art11',
+                    id: 'resolve-arti',
                     serverId: 'art1',
                     releaseRepo: 'maven-virtual',
                     snapshotRepo: 'maven-virtual'
                 )  
                 
                 rtMavenDeployer (
-                    id: 'art22',
+                    id: 'deploy-arti',
                     serverId: 'art1',
                     releaseRepo: 'maven-dev-local',
                     snapshotRepo: 'maven-dev-local'
@@ -30,8 +31,8 @@ pipeline {
                     goals: 'clean install',
                     // Maven options.
                     //opts: '-Xms1024m -Xmx4096m',
-                    resolverId: 'art11',
-                    deployerId: 'art22',
+                    resolverId: 'resolve-arti',
+                    deployerId: 'deploy-arti',
                     // If the build name and build number are not set here, the current job name and number will be used:
                     buildName: 'my-build-name',
                     buildNumber: '17'
