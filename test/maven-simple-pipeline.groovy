@@ -39,6 +39,7 @@ node {
     }
     */
     
+    //询问是否继续
     stage('Approve'){
         input message: 'Comfirm deployment of production environment ?', ok: 'Yes'
         echo 'updata jirastatus'
