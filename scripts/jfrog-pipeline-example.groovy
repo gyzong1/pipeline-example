@@ -21,7 +21,7 @@ node {
     def POM_PATH = 'project-examples/maven-example/pom.xml'
 
     //git
-    // def GIT_URL = 'https://gitee.com/gyzong1/pipeline-example.git'
+    // def GIT_URL = 'https://gitee.com/gyzong1/pipeline-example.git'  
     def GIT_URL = 'https://github.com/gyzong1/pipeline-example.git'
     def BRANCH = 'master'
  //   def GIT_CREDENTIALS_ID = 'my-git-hub'
