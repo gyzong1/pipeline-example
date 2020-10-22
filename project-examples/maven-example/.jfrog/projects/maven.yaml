@@ -2,9 +2,9 @@ version: 1
 type: maven
 resolver:
   serverId: artv7
-  snapshotRepo: maven-virtual
-  releaseRepo: maven-virtual
+  snapshotRepo: gyz-maven-virtual
+  releaseRepo: gyz-maven-virtual
 deployer:
   serverId: artv7
-  snapshotRepo: maven-dev-local
-  releaseRepo: maven-dev-local
+  snapshotRepo: gyz-maven-dev-local
+  releaseRepo: gyz-maven-dev-local
