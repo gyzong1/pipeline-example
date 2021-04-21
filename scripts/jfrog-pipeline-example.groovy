@@ -227,7 +227,7 @@ file_contents = '''
                     
                     sh 'jfrog rt cp --spec=sync.spec'
             }  
-    
+    /*
             //promotion操作，进行包的升级
             stage('promotion') {
                 def promotionConfig = [
@@ -243,7 +243,7 @@ file_contents = '''
                 ]
                 artiServer.promote promotionConfig
             }
-    
+    */
             //进行部署(ansible)
             /*
             stage('deploy') {
