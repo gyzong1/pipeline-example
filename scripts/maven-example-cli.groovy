@@ -30,4 +30,10 @@ node {
         }
     }
     
+    stage('Publish') {
+        dir('project-examples/maven-example') {
+          sh "jfrog rt bs ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
+    }
+    
 }
