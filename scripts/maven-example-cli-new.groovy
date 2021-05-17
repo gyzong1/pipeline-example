@@ -5,8 +5,8 @@ node {
     env.M2_HOME="/usr/local/apache-maven-3.6.0"
     
     stage('Prepare') {
-        // sh 'jfrog rt c art1 --url=http://124.70.55.35:8082/artifactory --user=admin --password=Jfrogchina_2021 --interactive=false'
-        // sh 'jfrog config add art1 --overwrite=true --artifactory-url=http://124.70.55.35:9082/artifactory --user=admin --password=Jfrogchina_2021 --interactive=false'
+        // sh 'jfrog rt c art1 --url=http://124.70.55.35:8082/artifactory --user=admin --password=password --interactive=false'
+        // sh 'jfrog config add art1 --overwrite=true --artifactory-url=http://124.70.55.35:9082/artifactory --user=admin --password=password --interactive=false'
         sh 'jfrog config use art1'
     }
     stage('SCM') {
