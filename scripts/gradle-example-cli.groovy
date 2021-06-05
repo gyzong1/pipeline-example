@@ -4,7 +4,7 @@ node {
     //env.PATH="${env.NODE_HOME}/bin:${env.PATH}"
     
     stage('Prepare') {
-        sh 'jfrog rt c art1 --url=http://192.168.230.155:8081/artifactory --user=admin --password=password'        // 此处使用域名不好使，具体原因待查
+        sh 'jfrog rt c art1 --url=http://192.168.230.155:8081/artifactory --user=admin --password=password'        
         sh 'jfrog rt use art1'
     }
     stage('SCM') {
