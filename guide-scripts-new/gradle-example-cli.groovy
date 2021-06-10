@@ -32,5 +32,10 @@ node {
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
-    
+
+    stage('Publish') {
+        dir('project-examples/gradle-examples/gradle-example-ci-server') {
+          sh "jfrog rt bs --fail=false ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
+    }
 }
