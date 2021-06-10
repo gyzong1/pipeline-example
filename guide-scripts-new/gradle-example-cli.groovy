@@ -9,7 +9,7 @@ node {
     stage('Prepare') {
         sh 'jfrog config add art1 --overwrite=true --artifactory-url=http://124.70.55.35:9082/artifactory --user=admin --password=password --interactive=false'        
         sh 'jfrog config show'  
-        sh 'jfrog rt use art1'
+        sh 'jfrog config use art1'
         
     }
     stage('SCM') {
