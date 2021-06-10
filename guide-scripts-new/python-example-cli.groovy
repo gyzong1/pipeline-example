@@ -18,7 +18,7 @@ node {
     stage('Build') {
         dir('project-examples/gradle-examples/gradle-example-ci-server') {
           
-          sh 'jfrog rt gradlec --server-id-resolve=art1 --server-id-deploy=art1 --repo-resolve=gradle-virtual --repo-deploy=gradle-dev-local --uses-plugin=false'
+          sh 'jfrog rt pipc --server-id-resolve=art1 --repo-resolve=pypi-virtual'
           sh "jfrog rt gradle clean artifactoryPublish -b build.gradle --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
           sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
