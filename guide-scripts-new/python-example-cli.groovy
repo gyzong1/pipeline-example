@@ -16,22 +16,22 @@ node {
     }
     
     stage('Build') {
-        dir('project-examples/gradle-examples/gradle-example-ci-server') {
+        dir('project-examples/python-example') {
           
           sh 'jfrog rt pipc --server-id-resolve=art1 --repo-resolve=pypi-virtual'
-          sh "jfrog rt gradle clean artifactoryPublish -b build.gradle --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
+          sh "jfrog rt pip-install --trusted-host 124.70.55.35 . --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
           sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
     
     stage('Publish') {
-        dir('project-examples/gradle-examples/gradle-example-ci-server') {
+        dir('project-examples/python-example') {
           sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
 
     stage('Publish') {
-        dir('project-examples/gradle-examples/gradle-example-ci-server') {
+        dir('project-examples/python-example') {
           sh "jfrog rt bs --fail=false ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
     }
