@@ -2,6 +2,7 @@ node {
     
     //env.NODE_HOME=tool name: 'nodejs', type: 'nodejs'
     //env.PATH="${env.NODE_HOME}/bin:${env.PATH}"
+    env.PATH="/usr/local/src/go/bin:${env.PATH}"
     
     stage('Prepare') {
         sh 'jfrog config add art1 --overwrite=true --artifactory-url=http://124.70.55.35:9082/artifactory --user=admin --password=password --interactive=false'        
