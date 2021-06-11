@@ -4,7 +4,7 @@ node {
     //env.PATH="${env.NODE_HOME}/bin:${env.PATH}"
     
     stage('Prepare') {
-        sh 'jfrog config add art1 --overwrite=true --artifactory-url=http://124.70.55.35:9082/artifactory --user=admin --password= --interactive=false'        
+        sh 'jfrog config add art1 --overwrite=true --artifactory-url=http://124.70.55.35:9082/artifactory --user=admin --password=password --interactive=false'        
         sh 'jfrog config show'  
         sh 'jfrog config use art1'
         
