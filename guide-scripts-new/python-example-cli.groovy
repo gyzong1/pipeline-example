@@ -19,7 +19,7 @@ node {
         dir('project-examples/python-example') {
           
           sh 'jfrog rt pipc --server-id-resolve=art1 --repo-resolve=pypi-virtual'
-          sh "jfrog rt pipi -r requirements.txt c--trusted-host 124.70.55.35 --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} --module=jfrog-python-example"
+          sh "jfrog rt pipi -r requirements.txt --trusted-host 124.70.55.35 --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} --module=jfrog-python-example"
           sh 'python setup.py sdist bdist_wheel'
           // sh "jfrog rt pip-install --trusted-host 124.70.55.35 . --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
