@@ -18,13 +18,13 @@ node {
     stage('Build') {
         dir('project-examples/golang-example') {
           sh 'jfrog rt go-config --repo-deploy=go-dev-local --repo-resolve=go-virtual --server-id-deploy=art1 --server-id-resolve=art1'
-          sh 'jfrog rt go build --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}'
+          sh "jfrog rt go build --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}'
         }
     }
     
     stage('Publish Packages') {
         dir('project-examples/golang-example') {
-          sh 'jfrog rt gp go-dev-local v1.0.0 --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}'
+          sh "jfrog rt gp go-dev-local v1.0.0 --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
 
