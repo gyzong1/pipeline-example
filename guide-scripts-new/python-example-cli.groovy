@@ -19,18 +19,26 @@ node {
         dir('project-examples/python-example') {
           
           sh 'jfrog rt pipc --server-id-resolve=art1 --repo-resolve=pypi-virtual'
-          sh "jfrog rt pip-install --trusted-host 124.70.55.35 . --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
-          sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+          sh "jfrog rt pipi -r requirements.txt --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} --module=jfrog-python-example"
+          sh 'python setup.py sdist bdist_wheel'
+          // sh "jfrog rt pip-install --trusted-host 124.70.55.35 . --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER}"
         }
     }
     
-    stage('Publish') {
+    stage('Publish Packages') {
         dir('project-examples/python-example') {
-          sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+          sh "jfrog rt u dist/ pypi-dev-local/ --build-name=${env.JOB_NAME} --build-number=${env.BUILD_NUMBER} --module=jfrog-python-example"
         }
     }
 
-    stage('Publish') {
+    stage('Publish BuildInfo') {
+        dir('project-examples/python-example') {
+          sh "jfrog rt bce ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+          sh "jfrog rt bp ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+        }
+    }
+    
+    stage('Build Scan') {
         dir('project-examples/python-example') {
           sh "jfrog rt bs --fail=false ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
