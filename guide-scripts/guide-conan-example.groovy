@@ -31,6 +31,6 @@ node {
             sh "cp -r ~/.conan/data/openssl ./"
             sh "ls ./"
             // sh "conan upload zlib/1.2.11@conan/stable -r guide-conan-dev-local --all"
-               sh "conan upload openssl/1.1.1s@_/_ -r conan-local --all"
+               sh "conan upload openssl/1.1.1s@_/_ -r guide-conan-dev-local --all"
         }       
 }
