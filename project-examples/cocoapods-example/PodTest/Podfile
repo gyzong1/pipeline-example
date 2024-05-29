@@ -22,5 +22,9 @@ plugin 'cocoapods-art', :sources => [
 ]
 
 # pod 'AFNetworking'
+# pod 'Artsy+OSSUIFonts'
+# pod 'PLCrashReporter'
+# pod 'sqlite3'
 pod 'ZCPKit'
+
 
